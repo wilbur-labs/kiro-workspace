@@ -22,3 +22,16 @@ Description (1-3 lines, key info only)
 - One-time temporary info
 - Content already in RESUME.md or WORKFLOW.md
 - Obvious common knowledge
+
+## Archival (avoid context bloat)
+
+`LEARNED.md` should not grow unbounded. Apply these rules:
+
+1. **Per-agent file**: When entries from a single agent exceed ~30, split into `learned/<agent-name>.md` and reference from the main file.
+2. **Monthly archive**: At the end of each month, move entries older than 90 days into `learned/archive/YYYY-MM.md`. Keep only a one-line index in `LEARNED.md`:
+   ```markdown
+   ## Archive
+   - [2026-03] 12 entries — [archive/2026-03.md](archive/2026-03.md)
+   ```
+3. **Keep recent N**: The active `LEARNED.md` should contain at most ~50 most-recent entries.
+4. **Loadable subset**: agentSpawn hooks should load only `LEARNED.md` (not archives) to keep context lean.

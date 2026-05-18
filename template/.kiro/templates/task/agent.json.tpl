@@ -1,7 +1,7 @@
 {
-  "name": "example-agent",
-  "description": "Example agent for a project. Replace with your own.",
-  "prompt": "file://.kiro/prompts/example.md",
+  "name": "{{TASK_NAME}}",
+  "description": "Agent for {{TASK_NAME}} — replace with real description.",
+  "prompt": "file://.kiro/prompts/{{TASK_NAME}}.md",
   "tools": [
     "fs_read",
     "fs_write",
@@ -18,8 +18,8 @@
     "code"
   ],
   "resources": [
-    "file://tasks/example/WORKFLOW.md",
-    "file://tasks/example/RESUME.md",
+    "file://tasks/{{TASK_NAME}}/WORKFLOW.md",
+    "file://tasks/{{TASK_NAME}}/RESUME.md",
     "skill://.kiro/skills/auto-learn.md",
     "skill://.kiro/skills/output-templates.md",
     "skill://.kiro/skills/agent-delegation.md",
@@ -28,7 +28,7 @@
   "hooks": {
     "agentSpawn": [
       {
-        "command": "cat ./tasks/example/RESUME.md 2>/dev/null | head -40",
+        "command": "cat ./tasks/{{TASK_NAME}}/RESUME.md 2>/dev/null | head -40",
         "description": "Load task state"
       },
       {
@@ -41,5 +41,5 @@
       }
     ]
   },
-  "welcomeMessage": "Example agent ready. What would you like to do?"
+  "welcomeMessage": "{{TASK_NAME}} agent ready. What would you like to do?"
 }

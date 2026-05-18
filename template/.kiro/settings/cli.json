@@ -2,8 +2,8 @@
   "defaultAgent": "example-agent",
   "contextHooks": {
     "preChat": [
-      "cat ~/.kiro-workspace/.kiro/shared/SHARED-CONTEXT.md 2>/dev/null",
-      "cat ~/.kiro-workspace/.kiro/learned/LEARNED.md 2>/dev/null"
+      "cat ./.kiro/shared/SHARED-CONTEXT.md 2>/dev/null",
+      "cat ./.kiro/learned/LEARNED.md 2>/dev/null"
     ]
   }
 }
