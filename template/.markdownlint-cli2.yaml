@@ -1,0 +1,30 @@
+# markdownlint-cli2 configuration
+# https://github.com/DavidAnson/markdownlint-cli2
+# Run: npx markdownlint-cli2 "**/*.md"
+# Fix: npx markdownlint-cli2 --fix "**/*.md"
+#
+# Rules disabled to match AI-DLC document style (per awslabs/aidlc-workflows).
+
+config:
+  # Line-length — long URLs, tables, code examples, ASCII diagrams
+  MD013: false
+
+  # Inline HTML — <img> tags for screenshots/badges in README
+  MD033: false
+
+  # Duplicate headings — section names repeat across platform guides
+  MD024: false
+
+  # Emphasis as heading — bold text used as sub-labels in lists
+  MD036: false
+
+  # Tables: aligned column style
+  MD060:
+    style: "aligned"
+
+ignores:
+  - "node_modules/**"
+  - ".claude/**"
+  - "tasks/**/aidlc-docs/**"   # AI-DLC generated artifacts (gitignored anyway)
+  - ".kiro/aws-aidlc-rule-details/**"  # Vendored from upstream — don't lint
+  - ".kiro/steering/aws-aidlc-rules/**"  # Vendored from upstream — don't lint

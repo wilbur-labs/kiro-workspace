@@ -1,0 +1,84 @@
+# AGENTS.md
+
+> Entry point for AI coding agents (Codex, Claude Code, Kiro CLI, etc.) working in this workspace.
+> Human-readable overview is in [README.md](README.md).
+
+## Project overview
+
+This is a **multi-agent workspace** for managing several projects under a single kiro-cli setup.
+
+- Each project has its own agent (`.kiro/agents/<name>.json`) and task directory (`tasks/<name>/`).
+- A shared context layer (`.kiro/shared/`, `.kiro/learned/`, `.kiro/skills/`) carries information across agents.
+- The [AI-DLC](https://github.com/awslabs/aidlc-workflows) v0.1.8 methodology is pre-installed under `.kiro/steering/` and `.kiro/aws-aidlc-rule-details/`.
+
+## Repository structure
+
+```text
+.kiro/
+├── steering/                          # Auto-loaded rules (AI-DLC + locale override)
+│   ├── aws-aidlc-rules/core-workflow.md
+│   └── locale-override.md             # Forces Chinese interaction + JST + per-task aidlc-docs
+├── aws-aidlc-rule-details/            # AI-DLC detail rules (loaded on demand)
+├── agents/                            # Per-project agent definitions
+├── prompts/                           # Per-agent system prompts (referenced via file://)
+├── shared/SHARED-CONTEXT.md           # Cross-agent environment info
+├── learned/LEARNED.md                 # Auto-appended experience (with archive policy)
+├── skills/                            # Cross-project reusable instruction modules
+├── templates/
+│   ├── task/                          # Scaffolding for new tasks (used by new-task.sh)
+│   └── inputs/                        # AI-DLC Vision + Tech-Env document templates
+└── settings/
+
+scripts/new-task.sh                    # Scaffold a new task in one command
+
+tasks/<name>/
+├── RESUME.md                          # Cross-session human-readable summary
+├── WORKFLOW.md                        # Process definition
+└── aidlc-docs/                        # AI-DLC artifacts (gitignored, source of truth while running)
+```
+
+## Which docs to read by task type
+
+- **Adding a new project** → run `scripts/new-task.sh <name> <project-path>`, then edit the generated files
+- **AI-DLC workflow questions** → `.kiro/skills/aidlc-usage-tips.md`
+- **Starting an AI-DLC workflow for a new project** → `.kiro/templates/inputs/README.md`
+- **Cross-agent collaboration** → `.kiro/skills/agent-delegation.md`
+- **Recording a learned lesson** → append to `.kiro/learned/LEARNED.md`, see `.kiro/skills/auto-learn.md` for archival policy
+- **Code style / output formats** → `.kiro/skills/output-templates.md`
+- **Delegating small tasks to local LLMs** → `.kiro/skills/delegate-to-local-llm.md`
+
+## Setup commands
+
+```bash
+# Lint markdown files (matches awslabs/aidlc-workflows style)
+npx markdownlint-cli2 "**/*.md"
+
+# Auto-fix where possible
+npx markdownlint-cli2 --fix "**/*.md"
+
+# Install pre-commit hooks (optional)
+pre-commit install
+
+# Scaffold a new task
+./scripts/new-task.sh <task-name> <project-path>
+```
+
+## Rules for agents
+
+1. **Language**: Chat in Chinese (中文). Commit messages in English. See `.kiro/steering/locale-override.md`.
+2. **State management**: After significant work, update `tasks/<name>/RESUME.md`. Don't fabricate state — read the file first.
+3. **AI-DLC artifacts**: Generate under `tasks/<name>/aidlc-docs/`, NOT repository root.
+4. **Learning**: When a cross-cutting lesson emerges, append to `.kiro/learned/LEARNED.md`. Follow `.kiro/skills/auto-learn.md` archival rules.
+5. **Hooks**: Spawn hooks load RESUME, SHARED-CONTEXT, LEARNED. Don't duplicate that content in chat.
+6. **Cross-agent work**: Use `subagent` tool with rules in `.kiro/skills/agent-delegation.md`.
+7. **Vibe coding is forbidden** — when AI-DLC is in use, update design docs first, then regenerate code. See `aidlc-usage-tips.md`.
+
+## Code style
+
+- Markdown only in this template (no production code lives here).
+- Markdown lint config: `.markdownlint-cli2.yaml` (MD013/MD024/MD033/MD036 disabled to match AI-DLC document style).
+- Commit messages: Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`).
+
+## License
+
+MIT
