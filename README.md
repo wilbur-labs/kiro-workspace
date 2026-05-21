@@ -39,7 +39,9 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │   └── example.md
 │
 ├── shared/SHARED-CONTEXT.md         # Cross-agent environment/preferences
-├── learned/LEARNED.md               # Auto-appended experience (with archive policy)
+├── learned/                         # Auto-appended experience (with archive policy)
+│   ├── LEARNED.md
+│   └── archive/                     # Monthly archives (see auto-learn.md)
 │
 ├── skills/                          # Cross-project reusable instructions
 │   ├── README.md                    # Convention for what goes here
@@ -47,9 +49,7 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │   ├── output-templates.md
 │   ├── agent-delegation.md
 │   ├── aidlc-usage-tips.md          # Distilled best practices for AI-DLC interaction
-│   ├── delegate-to-local-llm.md
-│   ├── ci-review-checklist.md
-│   └── gitlab-api.md
+│   └── delegate-to-local-llm.md
 │
 ├── templates/
 │   ├── task/                        # Scaffolding for new tasks (used by new-task.sh)
@@ -64,12 +64,13 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │       ├── technical-environment-guide.md
 │       └── example-*.md
 │
-└── settings/
-    ├── cli.json
-    └── lsp.json
+├── settings/
+│   └── cli.json
+└── VERSION                          # AI-DLC version tracking
 
 scripts/
-└── new-task.sh                      # Scaffold a new task in one command
+├── new-task.sh                      # Scaffold a new task in one command
+└── update-aidlc.sh                  # Update AI-DLC rules from GitHub release
 
 tasks/
 └── <task-name>/

@@ -2,6 +2,7 @@
   "name": "{{TASK_NAME}}",
   "description": "Agent for {{TASK_NAME}} — replace with real description.",
   "prompt": "file://.kiro/prompts/{{TASK_NAME}}.md",
+  "_comment_tools": "All tools the agent CAN use",
   "tools": [
     "fs_read",
     "fs_write",
@@ -11,6 +12,8 @@
     "code",
     "web_fetch"
   ],
+
+  "_comment_allowedTools": "Tools that can execute without user confirmation",
   "allowedTools": [
     "fs_read",
     "grep",

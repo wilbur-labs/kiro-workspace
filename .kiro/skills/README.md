@@ -5,8 +5,8 @@ This directory holds **cross-project, reusable** instruction documents that any 
 ## What belongs here
 
 - Generic patterns: `auto-learn.md`, `output-templates.md`, `agent-delegation.md`
-- Tool usage rules: `delegate-to-local-llm.md`, `gitlab-api.md`
-- Universal checklists: `ci-review-checklist.md`
+- Tool usage rules: `delegate-to-local-llm.md`
+- AI-DLC interaction tips: `aidlc-usage-tips.md`
 
 ## What does NOT belong here
 

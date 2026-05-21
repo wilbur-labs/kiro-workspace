@@ -1,7 +1,8 @@
 {
   "name": "example-agent",
   "description": "Example agent for a project. Replace with your own.",
-  "prompt": "file://.kiro/prompts/example.md",
+  "prompt": "file://../prompts/example.md",
+
   "tools": [
     "fs_read",
     "fs_write",
@@ -11,6 +12,7 @@
     "code",
     "web_fetch"
   ],
+
   "allowedTools": [
     "fs_read",
     "grep",

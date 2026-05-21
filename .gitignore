@@ -7,25 +7,19 @@ id_ed25519*
 
 # Binary tools
 *.exe
-dist_release_tar*
 
-# Generated data
-dashboard/data/
-sessions/
-aidlc-docs/
+# AI-DLC generated artifacts (per-task, regenerable)
+**/aidlc-docs/*
+!**/aidlc-docs/.gitkeep
 
-# Project-specific (not part of template)
-/tasks/
-/.kiro/agents/
+# User-generated content (not part of template)
+/.kiro/agents/*.json
+!/.kiro/agents/example.json
+/.kiro/prompts/*.md
+!/.kiro/prompts/example.md
 /.kiro/learned/LEARNED.md
 /.kiro/shared/SHARED-CONTEXT.md
-/.kiro/prompts/
-/.kiro/skills/lora-studio/
-/agora-internal/
-/agents/
-/scripts/
-/dashboard/
-/kw.sh
-/setup.sh
-/MEMORY.md
-/Report_0319.md
+
+# Task directories (users create their own)
+/tasks/*/
+!/tasks/example/
