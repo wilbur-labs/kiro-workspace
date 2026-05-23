@@ -35,12 +35,16 @@
         "description": "Load task state"
       },
       {
-        "command": "cat ./.kiro/shared/SHARED-CONTEXT.md 2>/dev/null",
-        "description": "Load shared context"
+        "command": "cat ./.kiro/shared/SHARED-CONTEXT.md 2>/dev/null || echo '⚠ .kiro/shared/SHARED-CONTEXT.md missing — run scripts/init-workspace.sh to create it from the bundled .tpl'",
+        "description": "Load workspace-level shared context"
       },
       {
-        "command": "cat ./.kiro/learned/LEARNED.md 2>/dev/null",
-        "description": "Load learned memories"
+        "command": "cat ./tasks/{{TASK_NAME}}/learned.md 2>/dev/null",
+        "description": "Load task-specific learnings (project schema, domain quirks)"
+      },
+      {
+        "command": "cat ./.kiro/learned/LEARNED.md 2>/dev/null || echo '⚠ .kiro/learned/LEARNED.md missing — run scripts/init-workspace.sh to create it from the bundled .tpl'",
+        "description": "Load cross-task learnings (reusable across projects)"
       }
     ]
   },

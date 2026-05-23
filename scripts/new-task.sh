@@ -52,6 +52,7 @@ substitute() {
 
 substitute "$TEMPLATE_DIR/RESUME.md.tpl"   "$TASK_DIR/RESUME.md"
 substitute "$TEMPLATE_DIR/WORKFLOW.md.tpl" "$TASK_DIR/WORKFLOW.md"
+substitute "$TEMPLATE_DIR/learned.md.tpl"  "$TASK_DIR/learned.md"
 substitute "$TEMPLATE_DIR/agent.json.tpl"  "$AGENT_FILE"
 substitute "$TEMPLATE_DIR/prompt.md.tpl"   "$PROMPT_FILE"
 
@@ -59,6 +60,7 @@ cat <<EOF
 ✓ Created task '$TASK_NAME'
   - $TASK_DIR/RESUME.md
   - $TASK_DIR/WORKFLOW.md
+  - $TASK_DIR/learned.md    (per-task knowledge pool; cross-task lessons go in .kiro/learned/LEARNED.md)
   - $TASK_DIR/aidlc-docs/   (gitignored, AI-DLC will write here)
   - $AGENT_FILE
   - $PROMPT_FILE
