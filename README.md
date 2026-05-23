@@ -20,10 +20,13 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 
 ```
 .kiro/
-├── steering/                        # ★ AI-DLC rules + locale override (auto-loaded)
+├── steering/                        # ★ AI-DLC rules + local overrides (auto-loaded)
 │   ├── aws-aidlc-rules/
-│   │   └── core-workflow.md         # Three-phase adaptive workflow
-│   └── locale-override.md           # Chinese interaction + JST timestamps + AI-DLC output path
+│   │   └── core-workflow.md         # Three-phase adaptive workflow (upstream)
+│   ├── locale-override.md           # Chinese interaction + JST timestamps + AI-DLC output path
+│   ├── change-management.md         # CR-log + phase-approval gate
+│   ├── interface-contracts.md       # Mandatory contract freeze at end of INCEPTION
+│   └── cross-unit-smoke.md          # Per-unit smoke + Build&Test must actually run
 │
 ├── aws-aidlc-rule-details/          # AI-DLC detail rules (referenced on demand)
 │   ├── common/                      # Welcome msg, QA format, validation
@@ -109,6 +112,8 @@ tasks/
 | Update AI-DLC stage pointer in RESUME | `tasks/<name>/RESUME.md` → `## Current AI-DLC Stage` section |
 | Capture a scope suggestion mid-flow | Append a row to `tasks/<name>/aidlc-docs/change-requests.md` (see `.kiro/skills/raise-cr.md`) |
 | Read the CR-type definitions and phase gate | `.kiro/steering/change-management.md` |
+| Understand the mandatory Interface Contracts stage | `.kiro/steering/interface-contracts.md` |
+| Understand the per-unit cross-unit smoke + Build&Test must-actually-run rule | `.kiro/steering/cross-unit-smoke.md` |
 | Change global env info (URLs, team, tools) | `.kiro/shared/SHARED-CONTEXT.md` |
 | Tune an agent's persona / decision principles / communication style | `.kiro/prompts/<name>.md` |
 | Add/remove an agent's tools or resources | `.kiro/agents/<name>.json` |
