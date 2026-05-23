@@ -74,12 +74,13 @@ substitute() {
     "$src" > "$dst"
 }
 
-substitute "$TEMPLATE_DIR/task.yaml.tpl"   "$TASK_DIR/task.yaml"
-substitute "$TEMPLATE_DIR/RESUME.md.tpl"   "$TASK_DIR/RESUME.md"
-substitute "$TEMPLATE_DIR/WORKFLOW.md.tpl" "$TASK_DIR/WORKFLOW.md"
-substitute "$TEMPLATE_DIR/learned.md.tpl"  "$TASK_DIR/learned.md"
-substitute "$TEMPLATE_DIR/agent.json.tpl"  "$AGENT_FILE"
-substitute "$TEMPLATE_DIR/prompt.md.tpl"   "$PROMPT_FILE"
+substitute "$TEMPLATE_DIR/task.yaml.tpl"           "$TASK_DIR/task.yaml"
+substitute "$TEMPLATE_DIR/RESUME.md.tpl"           "$TASK_DIR/RESUME.md"
+substitute "$TEMPLATE_DIR/WORKFLOW.md.tpl"         "$TASK_DIR/WORKFLOW.md"
+substitute "$TEMPLATE_DIR/learned.md.tpl"          "$TASK_DIR/learned.md"
+substitute "$TEMPLATE_DIR/change-requests.md.tpl"  "$TASK_DIR/aidlc-docs/change-requests.md"
+substitute "$TEMPLATE_DIR/agent.json.tpl"          "$AGENT_FILE"
+substitute "$TEMPLATE_DIR/prompt.md.tpl"           "$PROMPT_FILE"
 
 INPUTS_TPL="$WORKSPACE_ROOT/.kiro/templates/inputs"
 AIDLC_INPUTS_LINE=""
@@ -101,7 +102,8 @@ cat <<EOF
   - $TASK_DIR/RESUME.md
   - $TASK_DIR/WORKFLOW.md
   - $TASK_DIR/learned.md    (per-task knowledge pool; cross-task lessons go in .kiro/learned/LEARNED.md)$AIDLC_INPUTS_LINE
-  - $TASK_DIR/aidlc-docs/   (gitignored, AI-DLC will write here)
+  - $TASK_DIR/aidlc-docs/                   (gitignored, AI-DLC will write here)
+  - $TASK_DIR/aidlc-docs/change-requests.md (CR log; raise-cr skill + change-management steering)
   - $AGENT_FILE
   - $PROMPT_FILE
 

@@ -50,6 +50,7 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │   ├── README.md                    # Convention for what goes here
 │   ├── auto-learn.md                # When/how to capture learnings (with layer decision tree)
 │   ├── memory-layering.md           # Where each kind of knowledge belongs
+│   ├── raise-cr.md                  # Capture scope changes without breaking flow
 │   ├── output-templates.md
 │   ├── agent-delegation.md
 │   ├── aidlc-usage-tips.md          # Distilled best practices for AI-DLC interaction
@@ -61,6 +62,7 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │   │   ├── RESUME.md.tpl            # Includes Current AI-DLC Stage section
 │   │   ├── WORKFLOW.md.tpl
 │   │   ├── learned.md.tpl           # Per-task knowledge pool (project-specific)
+│   │   ├── change-requests.md.tpl   # Per-task CR log (copied to aidlc-docs/, gitignored)
 │   │   ├── agent.json.tpl
 │   │   └── prompt.md.tpl            # Persona / decision principles / communication style
 │   └── inputs/                      # AI-DLC Vision + Tech-Env templates and guides
@@ -90,6 +92,7 @@ tasks/
     ├── vision.md                    # AI-DLC Vision document (skip with new-task.sh --no-aidlc)
     ├── tech-env.md                  # AI-DLC Tech-Env document (skip with new-task.sh --no-aidlc)
     ├── aidlc-docs/                  # AI-DLC artifacts (gitignored)
+    │   └── change-requests.md       # CR log (phase-approval gate reads this)
     │   ├── aidlc-state.md
     │   └── audit.md
     └── skills/                      # (Optional) project-specific skills
@@ -104,6 +107,8 @@ tasks/
 | Add a new project/task | Run `scripts/new-task.sh <name> <project-path>` (add `--no-aidlc` to skip vision/tech-env) |
 | Change project path / repo URL / branch prefix for a task | `tasks/<name>/task.yaml` (single source of truth — read by agentSpawn hook) |
 | Update AI-DLC stage pointer in RESUME | `tasks/<name>/RESUME.md` → `## Current AI-DLC Stage` section |
+| Capture a scope suggestion mid-flow | Append a row to `tasks/<name>/aidlc-docs/change-requests.md` (see `.kiro/skills/raise-cr.md`) |
+| Read the CR-type definitions and phase gate | `.kiro/steering/change-management.md` |
 | Change global env info (URLs, team, tools) | `.kiro/shared/SHARED-CONTEXT.md` |
 | Tune an agent's persona / decision principles / communication style | `.kiro/prompts/<name>.md` |
 | Add/remove an agent's tools or resources | `.kiro/agents/<name>.json` |

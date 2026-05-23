@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **M1.2.5 #10.1** — `.kiro/steering/change-management.md`: the CR-log enforcement layer. Defines five CR types (`bug` / `clarify` / `refine` / `creep` / `cut`), the phase-approval gate (block on `UNCLASSIFIED`, `OPEN`, or accepted `creep` with empty `Propagated To`), the standing-rule self-check the agent runs before producing design/code, and the creep-promotion flow (vision.md → requirements.md → re-approve before construction continues).
+- **M1.2.5 #10.2** — `.kiro/skills/raise-cr.md`: the capture playbook. User-side / agent-side / reviewer-side triggers; paste-ready acknowledgement phrases for the four common cases; zero-friction row-append protocol; explicit anti-patterns ("I'll just remember it", "bundling 5 suggestions into one CR"). Triage happens at gate boundaries, not in the middle of code-gen.
+- **M1.2.5 #10.3** — `.kiro/templates/task/change-requests.md.tpl` (9-column schema: ID / When / Phase / Source / Description / Type / Status / Decision / Propagated To) + `scripts/new-task.sh` instantiates it into `tasks/<name>/aidlc-docs/change-requests.md` (gitignored, per-task user-instance file). agentSpawn hook now surfaces OPEN CRs (`grep -E '^\| CR-[0-9]+\b.* OPEN '`) so a fresh agent sees blockers before proposing approval. `agent.json.tpl` resources list also gains `memory-layering.md` (M1.1 leftover) and `raise-cr.md`.
 - **M1.2 #5** — `RESUME.md.tpl` gains a `## Current AI-DLC Stage` section (phase / stage / unit / next-unchecked) for human-readable resume; agentSpawn hook also `cat`s the machine-maintained `aidlc-docs/aidlc-state.md` so a fresh agent picks up mid-flight AI-DLC work without the user re-stating it.
 - **M1.2 #6.a** — Blank `vision.md.tpl` and `tech-env.md.tpl` under `.kiro/templates/inputs/`. `new-task.sh` now copies both into `tasks/<name>/` by default (`--no-aidlc` flag opts out for ad-hoc tasks). Skeletons reuse the structure of the existing `example-minimal-*` files but ship empty for users to fill in.
 - **M1.2 #6.b** — `tasks/<name>/task.yaml` as the single source of truth for `project_path`, `repo_url`, `branch_prefix`, `default_workdir`. `new-task.sh` instantiates it from `.kiro/templates/task/task.yaml.tpl`. agentSpawn hook now prints task metadata first on session start; `RESUME.md.tpl` and `prompt.md.tpl` point at `task.yaml` instead of duplicating the path inline.
@@ -22,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **M1.2.5 #10** — `prompt.md.tpl` Decision Principles drops the "once M1.2.5 lands" placeholder and now points directly at `raise-cr.md` + `change-management.md`. Rules section adds rule #6 explicitly mandating CR capture for any scope suggestion.
 - **M1.2 #6.b** — `RESUME.md.tpl` Key Info section now points to `task.yaml` instead of duplicating `project_path` inline; `prompt.md.tpl` Environment section likewise. Eliminates two prose-copies of the same fact.
 - **M1.2 #6.a** — Quick Start in `README.md` no longer hand-copies `example-minimal-*.md` into `vision.md` / `tech-env.md` — `new-task.sh` handles it. (Also collapses a duplicate step 4/5 left over from the M1.1 README rewrite.)
 - **M1.2 docs** — README.md / AGENTS.md: documented `task.yaml`, the `--no-aidlc` flag, `Current AI-DLC Stage` section, and prompt persona/principles/style.

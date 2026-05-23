@@ -24,6 +24,8 @@
     "file://tasks/{{TASK_NAME}}/WORKFLOW.md",
     "file://tasks/{{TASK_NAME}}/RESUME.md",
     "skill://.kiro/skills/auto-learn.md",
+    "skill://.kiro/skills/memory-layering.md",
+    "skill://.kiro/skills/raise-cr.md",
     "skill://.kiro/skills/output-templates.md",
     "skill://.kiro/skills/agent-delegation.md",
     "skill://.kiro/skills/aidlc-usage-tips.md"
@@ -41,6 +43,10 @@
       {
         "command": "cat ./tasks/{{TASK_NAME}}/aidlc-docs/aidlc-state.md 2>/dev/null | head -20",
         "description": "Load AI-DLC state (machine-maintained source of truth while AI-DLC is running)"
+      },
+      {
+        "command": "echo '=== Open CRs (must clear before phase approval — see .kiro/steering/change-management.md) ===' && grep -E '^\\| CR-[0-9]+\\b.* OPEN ' ./tasks/{{TASK_NAME}}/aidlc-docs/change-requests.md 2>/dev/null | head -10",
+        "description": "Surface open change requests that block the next phase-approval gate"
       },
       {
         "command": "cat ./.kiro/shared/SHARED-CONTEXT.md 2>/dev/null || echo '⚠ .kiro/shared/SHARED-CONTEXT.md missing — run scripts/init-workspace.sh to create it from the bundled .tpl'",
