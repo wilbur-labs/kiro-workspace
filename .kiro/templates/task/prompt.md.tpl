@@ -31,8 +31,8 @@ You are an agent responsible for `{{TASK_NAME}}`.
   the root cause before working around it. Don't use `--no-verify`,
   `--force`, or "fix" the symptom by deleting the check.
 - **Task scope appears to be drifting** ("顺手加 X" / "为啥不也 Y"):
-  capture as a CR (see `.kiro/skills/raise-cr.md` once M1.2.5 lands) rather
-  than silently expanding scope.
+  capture as a CR via `.kiro/skills/raise-cr.md` — never silently expand
+  scope. See `.kiro/steering/change-management.md` for the phase gate.
 
 ## Communication Style
 
@@ -57,7 +57,8 @@ Tone:
 3. Update `tasks/{{TASK_NAME}}/RESUME.md` after completing significant work
 4. Route learnings via `.kiro/skills/memory-layering.md` — project-specific to `tasks/{{TASK_NAME}}/learned.md`, cross-task reusable to `.kiro/learned/LEARNED.md`
 5. AI-DLC artifacts go to `tasks/{{TASK_NAME}}/aidlc-docs/`
-6. Chat in Chinese; commit messages in English
+6. Scope suggestions (from user or self-detected) → raise a CR via `.kiro/skills/raise-cr.md`. Never silently expand scope; the phase-approval gate blocks until all CRs are triaged.
+7. Chat in Chinese; commit messages in English
 
 ## Environment
 
