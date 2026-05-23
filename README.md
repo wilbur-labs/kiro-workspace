@@ -57,14 +57,17 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │
 ├── templates/
 │   ├── task/                        # Scaffolding for new tasks (used by new-task.sh)
-│   │   ├── RESUME.md.tpl
+│   │   ├── task.yaml.tpl            # Structured metadata (project_path, repo_url, branch_prefix)
+│   │   ├── RESUME.md.tpl            # Includes Current AI-DLC Stage section
 │   │   ├── WORKFLOW.md.tpl
 │   │   ├── learned.md.tpl           # Per-task knowledge pool (project-specific)
 │   │   ├── agent.json.tpl
-│   │   └── prompt.md.tpl
-│   └── inputs/                      # AI-DLC Vision + Tech-Env document templates
+│   │   └── prompt.md.tpl            # Persona / decision principles / communication style
+│   └── inputs/                      # AI-DLC Vision + Tech-Env templates and guides
 │       ├── README.md
 │       ├── inputs-quickstart.md
+│       ├── vision.md.tpl            # Blank vision skeleton (copied by new-task.sh)
+│       ├── tech-env.md.tpl          # Blank tech-env skeleton (copied by new-task.sh)
 │       ├── vision-document-guide.md
 │       ├── technical-environment-guide.md
 │       └── example-*.md
@@ -80,9 +83,12 @@ scripts/
 
 tasks/
 └── <task-name>/
+    ├── task.yaml                    # Structured metadata — single source of truth for paths/repo
     ├── RESUME.md                    # Cross-session summary (human-readable)
     ├── WORKFLOW.md                  # Process definition
     ├── learned.md                   # Per-task knowledge pool (project schema, domain quirks)
+    ├── vision.md                    # AI-DLC Vision document (skip with new-task.sh --no-aidlc)
+    ├── tech-env.md                  # AI-DLC Tech-Env document (skip with new-task.sh --no-aidlc)
     ├── aidlc-docs/                  # AI-DLC artifacts (gitignored)
     │   ├── aidlc-state.md
     │   └── audit.md
@@ -95,9 +101,11 @@ tasks/
 
 | Goal | File |
 |------|------|
-| Add a new project/task | Run `scripts/new-task.sh <name> <project-path>` |
+| Add a new project/task | Run `scripts/new-task.sh <name> <project-path>` (add `--no-aidlc` to skip vision/tech-env) |
+| Change project path / repo URL / branch prefix for a task | `tasks/<name>/task.yaml` (single source of truth — read by agentSpawn hook) |
+| Update AI-DLC stage pointer in RESUME | `tasks/<name>/RESUME.md` → `## Current AI-DLC Stage` section |
 | Change global env info (URLs, team, tools) | `.kiro/shared/SHARED-CONTEXT.md` |
-| Tune an agent's role/rules | `.kiro/prompts/<name>.md` |
+| Tune an agent's persona / decision principles / communication style | `.kiro/prompts/<name>.md` |
 | Add/remove an agent's tools or resources | `.kiro/agents/<name>.json` |
 | Record a project-specific learning (schema, domain quirk) | Append to `tasks/<name>/learned.md` |
 | Record a cross-project learning (tool / framework / internal-system recipe) | Append to `.kiro/learned/LEARNED.md` (must include "Why cross-task" line) |
@@ -123,22 +131,19 @@ cd my-workspace
 # 3. Edit shared context
 $EDITOR .kiro/shared/SHARED-CONTEXT.md
 
-# 4. Scaffold a new task
+# 4. Scaffold a new task (also creates task.yaml, vision.md, tech-env.md)
 ./scripts/new-task.sh myproject /home/me/myproject
+# (add --no-aidlc to skip the vision.md / tech-env.md copy for simple tasks)
 
-# 4. Refine the agent
-$EDITOR .kiro/prompts/myproject.md
-$EDITOR tasks/myproject/RESUME.md
+# 5. Refine the agent + metadata
+$EDITOR .kiro/prompts/myproject.md       # persona / decision principles / communication style
+$EDITOR tasks/myproject/task.yaml        # repo_url, branch_prefix, etc.
+$EDITOR tasks/myproject/RESUME.md        # current state
 
-# 5. Refine the agent
-$EDITOR .kiro/prompts/myproject.md
-$EDITOR tasks/myproject/RESUME.md
-
-# 6. (Optional but highly recommended) Prepare AI-DLC inputs
-cp .kiro/templates/inputs/example-minimal-vision-scientific-calculator-api.md \
-   tasks/myproject/vision.md
-cp .kiro/templates/inputs/example-minimal-tech-env-scientific-calculator-api.md \
-   tasks/myproject/tech-env.md
+# 6. (Optional but highly recommended) Fill the AI-DLC inputs that
+#    new-task.sh already copied for you. See vision-document-guide.md
+#    and technical-environment-guide.md, or refer to the example-*.md
+#    files for worked structures.
 $EDITOR tasks/myproject/vision.md tasks/myproject/tech-env.md
 
 # 7. Start working
