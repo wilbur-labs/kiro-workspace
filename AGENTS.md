@@ -21,19 +21,26 @@ This is a **multi-agent workspace** for managing several projects under a single
 ├── aws-aidlc-rule-details/            # AI-DLC detail rules (loaded on demand)
 ├── agents/                            # Per-project agent definitions
 ├── prompts/                           # Per-agent system prompts (referenced via file://)
-├── shared/SHARED-CONTEXT.md           # Cross-agent environment info
-├── learned/LEARNED.md                 # Auto-appended experience (with archive policy)
+├── shared/SHARED-CONTEXT.md{,.tpl}    # Workspace env (.tpl shipped, .md created by init-workspace.sh)
+├── learned/LEARNED.md{,.tpl}          # Cross-task knowledge pool (.tpl shipped, .md created by init-workspace.sh)
 ├── skills/                            # Cross-project reusable instruction modules
+│   ├── auto-learn.md                  # Capture rules + layer decision tree
+│   └── memory-layering.md             # Where each kind of knowledge belongs
 ├── templates/
 │   ├── task/                          # Scaffolding for new tasks (used by new-task.sh)
+│   │   └── learned.md.tpl             # Per-task knowledge pool
 │   └── inputs/                        # AI-DLC Vision + Tech-Env document templates
 └── settings/
 
-scripts/new-task.sh                    # Scaffold a new task in one command
+scripts/
+├── init-workspace.sh                  # Bootstrap user-instance files from .tpl (one-time after clone)
+├── new-task.sh                        # Scaffold a new task in one command
+└── update-aidlc.sh                    # Update AI-DLC rules from GitHub release
 
 tasks/<name>/
 ├── RESUME.md                          # Cross-session human-readable summary
 ├── WORKFLOW.md                        # Process definition
+├── learned.md                         # Per-task knowledge pool (project schema, domain quirks)
 └── aidlc-docs/                        # AI-DLC artifacts (gitignored, source of truth while running)
 ```
 
@@ -43,7 +50,9 @@ tasks/<name>/
 - **AI-DLC workflow questions** → `.kiro/skills/aidlc-usage-tips.md`
 - **Starting an AI-DLC workflow for a new project** → `.kiro/templates/inputs/README.md`
 - **Cross-agent collaboration** → `.kiro/skills/agent-delegation.md`
-- **Recording a learned lesson** → append to `.kiro/learned/LEARNED.md`, see `.kiro/skills/auto-learn.md` for archival policy
+- **Recording a project-specific lesson** (schema, domain, business quirk) → append to `tasks/<name>/learned.md`
+- **Recording a cross-task lesson** (tool / framework / internal-system recipe) → append to `.kiro/learned/LEARNED.md` with a "Why cross-task" line
+- **Deciding where a lesson belongs** → read `.kiro/skills/memory-layering.md`
 - **Code style / output formats** → `.kiro/skills/output-templates.md`
 - **Delegating small tasks to local LLMs** → `.kiro/skills/delegate-to-local-llm.md`
 
@@ -59,6 +68,9 @@ npx markdownlint-cli2 --fix "**/*.md"
 # Install pre-commit hooks (optional)
 pre-commit install
 
+# Bootstrap user-instance files (one-time, idempotent)
+./scripts/init-workspace.sh
+
 # Scaffold a new task
 ./scripts/new-task.sh <task-name> <project-path>
 ```
@@ -68,8 +80,8 @@ pre-commit install
 1. **Language**: Chat in Chinese (中文). Commit messages in English. See `.kiro/steering/locale-override.md`.
 2. **State management**: After significant work, update `tasks/<name>/RESUME.md`. Don't fabricate state — read the file first.
 3. **AI-DLC artifacts**: Generate under `tasks/<name>/aidlc-docs/`, NOT repository root.
-4. **Learning**: When a cross-cutting lesson emerges, append to `.kiro/learned/LEARNED.md`. Follow `.kiro/skills/auto-learn.md` archival rules.
-5. **Hooks**: Spawn hooks load RESUME, SHARED-CONTEXT, LEARNED. Don't duplicate that content in chat.
+4. **Learning**: Run the layer decision tree in `.kiro/skills/memory-layering.md` before writing. Project-specific → `tasks/<name>/learned.md`. Cross-task reusable → `.kiro/learned/LEARNED.md` (with "Why cross-task" line). Follow `.kiro/skills/auto-learn.md` archival rules.
+5. **Hooks**: Spawn hooks load RESUME, SHARED-CONTEXT, per-task learned, cross-task LEARNED. Don't duplicate that content in chat.
 6. **Cross-agent work**: Use `subagent` tool with rules in `.kiro/skills/agent-delegation.md`.
 7. **Vibe coding is forbidden** — when AI-DLC is in use, update design docs first, then regenerate code. See `aidlc-usage-tips.md`.
 

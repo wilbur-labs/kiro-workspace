@@ -38,14 +38,18 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 ├── prompts/                         # Agent system prompts (referenced via file://)
 │   └── example.md
 │
-├── shared/SHARED-CONTEXT.md         # Cross-agent environment/preferences
-├── learned/                         # Auto-appended experience (with archive policy)
-│   ├── LEARNED.md
+├── shared/                          # Workspace-level env (gitignored — user-instance)
+│   ├── SHARED-CONTEXT.md.tpl        # Skeleton shipped with template
+│   └── SHARED-CONTEXT.md            # Created by scripts/init-workspace.sh
+├── learned/                         # Cross-task knowledge pool (with archive policy)
+│   ├── LEARNED.md.tpl               # Skeleton shipped with template
+│   ├── LEARNED.md                   # Created by scripts/init-workspace.sh (gitignored)
 │   └── archive/                     # Monthly archives (see auto-learn.md)
 │
 ├── skills/                          # Cross-project reusable instructions
 │   ├── README.md                    # Convention for what goes here
-│   ├── auto-learn.md
+│   ├── auto-learn.md                # When/how to capture learnings (with layer decision tree)
+│   ├── memory-layering.md           # Where each kind of knowledge belongs
 │   ├── output-templates.md
 │   ├── agent-delegation.md
 │   ├── aidlc-usage-tips.md          # Distilled best practices for AI-DLC interaction
@@ -55,6 +59,7 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │   ├── task/                        # Scaffolding for new tasks (used by new-task.sh)
 │   │   ├── RESUME.md.tpl
 │   │   ├── WORKFLOW.md.tpl
+│   │   ├── learned.md.tpl           # Per-task knowledge pool (project-specific)
 │   │   ├── agent.json.tpl
 │   │   └── prompt.md.tpl
 │   └── inputs/                      # AI-DLC Vision + Tech-Env document templates
@@ -69,6 +74,7 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 └── VERSION                          # AI-DLC version tracking
 
 scripts/
+├── init-workspace.sh                # Bootstrap user-instance files from .tpl (run once after clone)
 ├── new-task.sh                      # Scaffold a new task in one command
 └── update-aidlc.sh                  # Update AI-DLC rules from GitHub release
 
@@ -76,6 +82,7 @@ tasks/
 └── <task-name>/
     ├── RESUME.md                    # Cross-session summary (human-readable)
     ├── WORKFLOW.md                  # Process definition
+    ├── learned.md                   # Per-task knowledge pool (project schema, domain quirks)
     ├── aidlc-docs/                  # AI-DLC artifacts (gitignored)
     │   ├── aidlc-state.md
     │   └── audit.md
@@ -92,7 +99,9 @@ tasks/
 | Change global env info (URLs, team, tools) | `.kiro/shared/SHARED-CONTEXT.md` |
 | Tune an agent's role/rules | `.kiro/prompts/<name>.md` |
 | Add/remove an agent's tools or resources | `.kiro/agents/<name>.json` |
-| Record a learned lesson | Append to `.kiro/learned/LEARNED.md` |
+| Record a project-specific learning (schema, domain quirk) | Append to `tasks/<name>/learned.md` |
+| Record a cross-project learning (tool / framework / internal-system recipe) | Append to `.kiro/learned/LEARNED.md` (must include "Why cross-task" line) |
+| Decide where a learning belongs | Read `.kiro/skills/memory-layering.md` |
 | Add a reusable cross-project skill | New file in `.kiro/skills/` |
 | Add a project-specific skill | New file in `tasks/<name>/skills/` |
 | Customize AI-DLC behavior (language, output path) | `.kiro/steering/locale-override.md` |
@@ -108,24 +117,31 @@ tasks/
 git clone <this-repo> my-workspace
 cd my-workspace
 
-# 2. Edit shared context
+# 2. Bootstrap user-instance files from bundled .tpl skeletons (one-time, idempotent)
+./scripts/init-workspace.sh
+
+# 3. Edit shared context
 $EDITOR .kiro/shared/SHARED-CONTEXT.md
 
-# 3. Scaffold a new task
+# 4. Scaffold a new task
 ./scripts/new-task.sh myproject /home/me/myproject
 
 # 4. Refine the agent
 $EDITOR .kiro/prompts/myproject.md
 $EDITOR tasks/myproject/RESUME.md
 
-# 5. (Optional but highly recommended) Prepare AI-DLC inputs
+# 5. Refine the agent
+$EDITOR .kiro/prompts/myproject.md
+$EDITOR tasks/myproject/RESUME.md
+
+# 6. (Optional but highly recommended) Prepare AI-DLC inputs
 cp .kiro/templates/inputs/example-minimal-vision-scientific-calculator-api.md \
    tasks/myproject/vision.md
 cp .kiro/templates/inputs/example-minimal-tech-env-scientific-calculator-api.md \
    tasks/myproject/tech-env.md
 $EDITOR tasks/myproject/vision.md tasks/myproject/tech-env.md
 
-# 6. Start working
+# 7. Start working
 kiro-cli chat --agent myproject
 
 # Inside the chat, kick off AI-DLC:
@@ -186,9 +202,19 @@ Agents read `RESUME.md` on spawn via `agentSpawn` hooks (paths are relative, no 
 
 Use `subagent` tool with the rules in `.kiro/skills/agent-delegation.md` to dispatch work between agents (e.g., backend agent → frontend agent).
 
-## Memory Hygiene
+## Memory Layering
 
-`.kiro/learned/LEARNED.md` follows the archival policy in `.kiro/skills/auto-learn.md`:
+Knowledge is split across layers to keep agent context lean and prevent cross-task pollution. Full decision tree in [`.kiro/skills/memory-layering.md`](.kiro/skills/memory-layering.md).
+
+| Layer | File | When to write here |
+|---|---|---|
+| Per-task state | `tasks/<name>/RESUME.md` | Current state, next steps, blockers |
+| Per-task learned | `tasks/<name>/learned.md` | Project-specific schema, domain rules, business quirks |
+| Cross-task learned | `.kiro/learned/LEARNED.md` | Reusable tool / framework / internal-system recipes |
+| Shared context | `.kiro/shared/SHARED-CONTEXT.md` | Stable workspace env (org, team, network) |
+| Steering rules | `.kiro/steering/*.md` | Enforced code-gen / AI-DLC behavior |
+
+Capture rules and promotion flow live in [`.kiro/skills/auto-learn.md`](.kiro/skills/auto-learn.md). `LEARNED.md` follows an archival policy:
 - Active file keeps ~50 most recent entries
 - Older entries archived to `learned/archive/YYYY-MM.md`
 - Per-agent splits when one agent's entries exceed ~30
