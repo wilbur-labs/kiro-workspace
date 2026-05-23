@@ -54,6 +54,7 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │   ├── auto-learn.md                # When/how to capture learnings (with layer decision tree)
 │   ├── memory-layering.md           # Where each kind of knowledge belongs
 │   ├── raise-cr.md                  # Capture scope changes without breaking flow
+│   ├── aidlc-auto-trigger.md        # Proactively propose AI-DLC based on request shape
 │   ├── output-templates.md
 │   ├── agent-delegation.md
 │   ├── aidlc-usage-tips.md          # Distilled best practices for AI-DLC interaction
@@ -114,6 +115,7 @@ tasks/
 | Read the CR-type definitions and phase gate | `.kiro/steering/change-management.md` |
 | Understand the mandatory Interface Contracts stage | `.kiro/steering/interface-contracts.md` |
 | Understand the per-unit cross-unit smoke + Build&Test must-actually-run rule | `.kiro/steering/cross-unit-smoke.md` |
+| See how the agent decides whether to propose AI-DLC for a new request | `.kiro/skills/aidlc-auto-trigger.md` |
 | Change global env info (URLs, team, tools) | `.kiro/shared/SHARED-CONTEXT.md` |
 | Tune an agent's persona / decision principles / communication style | `.kiro/prompts/<name>.md` |
 | Add/remove an agent's tools or resources | `.kiro/agents/<name>.json` |
