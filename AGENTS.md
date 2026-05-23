@@ -25,11 +25,13 @@ This is a **multi-agent workspace** for managing several projects under a single
 ├── learned/LEARNED.md{,.tpl}          # Cross-task knowledge pool (.tpl shipped, .md created by init-workspace.sh)
 ├── skills/                            # Cross-project reusable instruction modules
 │   ├── auto-learn.md                  # Capture rules + layer decision tree
-│   └── memory-layering.md             # Where each kind of knowledge belongs
+│   ├── memory-layering.md             # Where each kind of knowledge belongs
+│   └── raise-cr.md                    # Capture scope suggestions without breaking flow
 ├── templates/
 │   ├── task/                          # Scaffolding for new tasks (used by new-task.sh)
 │   │   ├── task.yaml.tpl              # Structured metadata (project_path, repo_url, branch_prefix)
 │   │   ├── learned.md.tpl             # Per-task knowledge pool
+│   │   ├── change-requests.md.tpl     # Per-task CR log (copied to aidlc-docs/, gitignored)
 │   │   ├── RESUME.md.tpl              # Includes Current AI-DLC Stage section
 │   │   └── prompt.md.tpl              # Persona / decision principles / communication style
 │   └── inputs/                        # AI-DLC Vision + Tech-Env templates and guides
@@ -49,7 +51,10 @@ tasks/<name>/
 ├── learned.md                         # Per-task knowledge pool (project schema, domain quirks)
 ├── vision.md                          # AI-DLC Vision document (skip with new-task.sh --no-aidlc)
 ├── tech-env.md                        # AI-DLC Tech-Env document (skip with new-task.sh --no-aidlc)
-└── aidlc-docs/                        # AI-DLC artifacts (gitignored, source of truth while running)
+└── aidlc-docs/                        # AI-DLC artifacts (gitignored)
+    ├── change-requests.md             # CR log (phase-approval gate blocks on OPEN rows)
+    ├── aidlc-state.md                 # Source of truth while AI-DLC is running
+    └── …                              # requirements / design / etc.
 ```
 
 ## Which docs to read by task type
@@ -61,6 +66,7 @@ tasks/<name>/
 - **Recording a project-specific lesson** (schema, domain, business quirk) → append to `tasks/<name>/learned.md`
 - **Recording a cross-task lesson** (tool / framework / internal-system recipe) → append to `.kiro/learned/LEARNED.md` with a "Why cross-task" line
 - **Deciding where a lesson belongs** → read `.kiro/skills/memory-layering.md`
+- **Capturing a scope suggestion ("顺手加 X" / "为啥不也 Y") mid-flow** → append a CR row to `tasks/<name>/aidlc-docs/change-requests.md` using `.kiro/skills/raise-cr.md`; CR types and phase-approval gate live in `.kiro/steering/change-management.md`
 - **Code style / output formats** → `.kiro/skills/output-templates.md`
 - **Delegating small tasks to local LLMs** → `.kiro/skills/delegate-to-local-llm.md`
 
@@ -91,6 +97,7 @@ pre-commit install
 1. **Language**: Chat in Chinese (中文). Commit messages in English. See `.kiro/steering/locale-override.md`.
 2. **State management**: After significant work, update `tasks/<name>/RESUME.md` (the `## Current AI-DLC Stage` section for in-progress AI-DLC workflows). Don't fabricate state — read the file first.
 2a. **Paths and repo coordinates**: read from `tasks/<name>/task.yaml`. Don't hard-code `project_path` in prompts or RESUME — it lives in one place.
+2b. **Scope discipline**: when a suggestion arrives (from user or self-detected), raise a CR via `.kiro/skills/raise-cr.md`. Never silently expand scope. Phase approval blocks on OPEN CRs — see `.kiro/steering/change-management.md`.
 3. **AI-DLC artifacts**: Generate under `tasks/<name>/aidlc-docs/`, NOT repository root.
 4. **Learning**: Run the layer decision tree in `.kiro/skills/memory-layering.md` before writing. Project-specific → `tasks/<name>/learned.md`. Cross-task reusable → `.kiro/learned/LEARNED.md` (with "Why cross-task" line). Follow `.kiro/skills/auto-learn.md` archival rules.
 5. **Hooks**: Spawn hooks load RESUME, SHARED-CONTEXT, per-task learned, cross-task LEARNED. Don't duplicate that content in chat.
