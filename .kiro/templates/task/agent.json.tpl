@@ -31,8 +31,16 @@
   "hooks": {
     "agentSpawn": [
       {
+        "command": "echo '=== TASK METADATA ===' && cat ./tasks/{{TASK_NAME}}/task.yaml 2>/dev/null || echo '⚠ tasks/{{TASK_NAME}}/task.yaml missing — re-run scripts/new-task.sh or copy from .kiro/templates/task/task.yaml.tpl'",
+        "description": "Load task metadata (project_path, repo_url, branch_prefix) — single source of truth"
+      },
+      {
         "command": "cat ./tasks/{{TASK_NAME}}/RESUME.md 2>/dev/null | head -40",
         "description": "Load task state"
+      },
+      {
+        "command": "cat ./tasks/{{TASK_NAME}}/aidlc-docs/aidlc-state.md 2>/dev/null | head -20",
+        "description": "Load AI-DLC state (machine-maintained source of truth while AI-DLC is running)"
       },
       {
         "command": "cat ./.kiro/shared/SHARED-CONTEXT.md 2>/dev/null || echo '⚠ .kiro/shared/SHARED-CONTEXT.md missing — run scripts/init-workspace.sh to create it from the bundled .tpl'",
