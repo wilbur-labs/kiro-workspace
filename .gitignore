@@ -15,11 +15,14 @@ id_ed25519*
 # User-generated content (not part of template)
 /.kiro/agents/*.json
 !/.kiro/agents/example.json
+!/.kiro/agents/dogfood-todo-api.json
 /.kiro/prompts/*.md
 !/.kiro/prompts/example.md
+!/.kiro/prompts/dogfood-todo-api.md
 /.kiro/learned/LEARNED.md
 /.kiro/shared/SHARED-CONTEXT.md
 
 # Task directories (users create their own)
 /tasks/*/
 !/tasks/example/
+!/tasks/dogfood-todo-api/
