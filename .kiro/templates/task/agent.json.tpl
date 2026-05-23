@@ -26,6 +26,7 @@
     "skill://.kiro/skills/auto-learn.md",
     "skill://.kiro/skills/memory-layering.md",
     "skill://.kiro/skills/raise-cr.md",
+    "skill://.kiro/skills/aidlc-auto-trigger.md",
     "skill://.kiro/skills/output-templates.md",
     "skill://.kiro/skills/agent-delegation.md",
     "skill://.kiro/skills/aidlc-usage-tips.md"
