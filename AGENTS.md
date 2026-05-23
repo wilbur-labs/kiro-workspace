@@ -15,9 +15,12 @@ This is a **multi-agent workspace** for managing several projects under a single
 
 ```text
 .kiro/
-├── steering/                          # Auto-loaded rules (AI-DLC + locale override)
-│   ├── aws-aidlc-rules/core-workflow.md
-│   └── locale-override.md             # Forces Chinese interaction + JST + per-task aidlc-docs
+├── steering/                          # Auto-loaded rules (AI-DLC + local overrides)
+│   ├── aws-aidlc-rules/core-workflow.md    # Upstream three-phase workflow
+│   ├── locale-override.md             # Chinese interaction + JST + per-task aidlc-docs
+│   ├── change-management.md           # CR-log + phase-approval gate (M1.2.5)
+│   ├── interface-contracts.md         # Mandatory contract freeze at end of INCEPTION (M1.3)
+│   └── cross-unit-smoke.md            # Per-unit smoke + Build&Test must actually run (M1.3)
 ├── aws-aidlc-rule-details/            # AI-DLC detail rules (loaded on demand)
 ├── agents/                            # Per-project agent definitions
 ├── prompts/                           # Per-agent system prompts (referenced via file://)
@@ -98,6 +101,8 @@ pre-commit install
 2. **State management**: After significant work, update `tasks/<name>/RESUME.md` (the `## Current AI-DLC Stage` section for in-progress AI-DLC workflows). Don't fabricate state — read the file first.
 2a. **Paths and repo coordinates**: read from `tasks/<name>/task.yaml`. Don't hard-code `project_path` in prompts or RESUME — it lives in one place.
 2b. **Scope discipline**: when a suggestion arrives (from user or self-detected), raise a CR via `.kiro/skills/raise-cr.md`. Never silently expand scope. Phase approval blocks on OPEN CRs — see `.kiro/steering/change-management.md`.
+2c. **Interface freeze**: INCEPTION cannot close until every unit has a machine-readable contract under `aidlc-docs/inception/application-design/contracts/<unit>.{yaml,py,ts}` and the cross-unit review is clean. See `.kiro/steering/interface-contracts.md`.
+2d. **Smoke + Build&Test discipline**: per-unit code-gen step 7 requires passing smoke against any upstream unit already generated; Build & Test is incomplete until test commands have actually been executed and the results captured. See `.kiro/steering/cross-unit-smoke.md`.
 3. **AI-DLC artifacts**: Generate under `tasks/<name>/aidlc-docs/`, NOT repository root.
 4. **Learning**: Run the layer decision tree in `.kiro/skills/memory-layering.md` before writing. Project-specific → `tasks/<name>/learned.md`. Cross-task reusable → `.kiro/learned/LEARNED.md` (with "Why cross-task" line). Follow `.kiro/skills/auto-learn.md` archival rules.
 5. **Hooks**: Spawn hooks load RESUME, SHARED-CONTEXT, per-task learned, cross-task LEARNED. Don't duplicate that content in chat.
