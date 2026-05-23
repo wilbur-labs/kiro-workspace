@@ -29,7 +29,8 @@ This is a **multi-agent workspace** for managing several projects under a single
 ├── skills/                            # Cross-project reusable instruction modules
 │   ├── auto-learn.md                  # Capture rules + layer decision tree
 │   ├── memory-layering.md             # Where each kind of knowledge belongs
-│   └── raise-cr.md                    # Capture scope suggestions without breaking flow
+│   ├── raise-cr.md                    # Capture scope suggestions without breaking flow
+│   └── aidlc-auto-trigger.md          # Proactively propose AI-DLC based on request shape
 ├── templates/
 │   ├── task/                          # Scaffolding for new tasks (used by new-task.sh)
 │   │   ├── task.yaml.tpl              # Structured metadata (project_path, repo_url, branch_prefix)
@@ -103,6 +104,7 @@ pre-commit install
 2b. **Scope discipline**: when a suggestion arrives (from user or self-detected), raise a CR via `.kiro/skills/raise-cr.md`. Never silently expand scope. Phase approval blocks on OPEN CRs — see `.kiro/steering/change-management.md`.
 2c. **Interface freeze**: INCEPTION cannot close until every unit has a machine-readable contract under `aidlc-docs/inception/application-design/contracts/<unit>.{yaml,py,ts}` and the cross-unit review is clean. See `.kiro/steering/interface-contracts.md`.
 2d. **Smoke + Build&Test discipline**: per-unit code-gen step 7 requires passing smoke against any upstream unit already generated; Build & Test is incomplete until test commands have actually been executed and the results captured. See `.kiro/steering/cross-unit-smoke.md`.
+2e. **AI-DLC proposal**: at the start of a fresh session, detect the request shape (new system / feature / refactor / bug-fix / spike / ops) per `.kiro/skills/aidlc-auto-trigger.md` and PROPOSE the appropriate depth in one short message. User keeps full veto power; never start AI-DLC silently.
 3. **AI-DLC artifacts**: Generate under `tasks/<name>/aidlc-docs/`, NOT repository root.
 4. **Learning**: Run the layer decision tree in `.kiro/skills/memory-layering.md` before writing. Project-specific → `tasks/<name>/learned.md`. Cross-task reusable → `.kiro/learned/LEARNED.md` (with "Why cross-task" line). Follow `.kiro/skills/auto-learn.md` archival rules.
 5. **Hooks**: Spawn hooks load RESUME, SHARED-CONTEXT, per-task learned, cross-task LEARNED. Don't duplicate that content in chat.
