@@ -16,7 +16,7 @@ Before running `kiro-cli chat --agent dogfood-todo-api`, do this:
 ## Current State
 
 - Branch: `dogfood/<your local branch>` — dogfood code is local-only, do not push
-- Status: scaffold landed, dogfood run not yet executed by this fork
+- Status: scaffold landed + synced with M1.9 (main 98327ec, all M1.1–M1.9 gates present); dogfood run not yet executed by this fork
 
 ## Current AI-DLC Stage
 
@@ -59,9 +59,14 @@ Each row maps to one M0 audit candidate. **Bold** rows are the ones dogfood is b
   - [ ] Classify CR-N as `creep / accept` — agent requires `vision.md` + `requirements.md` updates **before** continuing; `Propagated To` filled in.
   - [ ] All CRs resolved → construction approval proceeds.
 
-### Will be verified once M1.9 lands
+### Verified by this dogfood run (#9 — M1.9 landed on main 98327ec)
 
-- [ ] **#9 Code-quality gate (M1.9 — pending)** — when M1.9 PR ships, re-run this dogfood and add row(s) here per its CHANGELOG entry. Probable acceptance: (a) reviewer-agent surfaces at least one semantic-duplication finding the linter missed, (b) `tech-env.md` quality-tools section is honored by `Build & Test`.
+- [ ] **#9 Code-quality 3-layer gate (M1.9)** — confirm all three layers fire:
+  - [ ] **Layer A (prevent)** — during code-gen the agent honors `.kiro/steering/code-quality.md`: when a needed validator/helper already exists it reuses instead of re-implementing (watch it search first), and it declines to add a factory/manager for a single call site. At least one observable instance of each.
+  - [ ] **Layer C (detect)** — after a unit's step 7 smoke passes, the `code-quality-reviewer` agent runs and emits the fixed four-block output (verdict / must-fix / suggested / verification), ≤5 findings. Plant a deliberate semantic duplicate (e.g. `todo-crud` re-validates the JWT that `auth` already owns); confirm the reviewer flags it as a cross-file finding **with evidence** — something ruff/eslint would not catch.
+  - [ ] A `Request changes` verdict (≥1 Blocker) blocks closing step 7; the finding is fixed or converted to a CR via `change-management.md`.
+  - [ ] **Layer B (measure)** — at Build & Test, the `tech-env.md` Code Quality Tooling thresholds are enforced: push one function past cognitive ≤15 (or new-code duplication >3%) and confirm the gate fails, captured in the test-run log.
+  - [ ] **Adoptability** — reviewer does not spam nits; with >5 candidate findings it collapses to Blocker/High only.
 
 ## What to do if a row fails
 
