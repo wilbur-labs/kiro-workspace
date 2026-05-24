@@ -75,13 +75,14 @@ remembering to do it.
 
 **How to invoke (this is the part that makes it executable, not just a rule):**
 
-- Use the `subagent` tool (blocking mode) to delegate to `code-quality-reviewer`
+- Use the `use_subagent` tool (blocking mode) to delegate to `code-quality-reviewer`
   — see `.kiro/skills/agent-delegation.md`. Pass the unit name + the list of
   files generated in this unit; do NOT dump full context (the reviewer reads the
   files itself).
-- `subagent` must be in the primary agent's `tools` list (it ships in
-  `agent.json.tpl`). If it is missing, that is a setup bug — **stop and raise it,
-  do not skip the gate.**
+- `use_subagent` is a kiro **builtin** tool — it does not need to be declared in
+  the agent's `tools` list (an earlier revision guessed a non-existent `subagent`
+  name). The blocker is never a missing tool; it is forgetting to read this gate
+  at all — which the construction-gate `agentSpawn` hook now surfaces.
 - Reviewer config: `.kiro/agents/code-quality-reviewer.json` (prompt:
   `.kiro/prompts/code-quality-reviewer.md`).
 

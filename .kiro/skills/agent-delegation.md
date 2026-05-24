@@ -10,7 +10,7 @@ Use this skill to coordinate work across multiple agents in this workspace.
 
 ## How to delegate
 
-Use the `subagent` tool with `mode: "blocking"` for results-needed-now tasks:
+Use the `use_subagent` tool with `mode: "blocking"` for results-needed-now tasks:
 
 ```yaml
 stages:
