@@ -32,6 +32,27 @@
   - `tasks/dogfood-todo-api/src/<unit>/tests/` — per-unit unit tests
   - `tasks/dogfood-todo-api/src/tests/smoke/` — cross-unit smoke tests required by M1.3 #2
 
+## Code Quality Tooling
+
+> Layer B of `.kiro/steering/code-quality.md` — the objective gate Build & Test
+> enforces. Declared explicitly so the complexity/duplication thresholds don't
+> stay on paper (this section was the gap dogfood surfaced — pytest/mypy/ruff
+> alone don't gate cognitive complexity or duplication).
+
+| Tool | Gate |
+| --- | --- |
+| `ruff check` | 0 new lint errors |
+| `radon` + `xenon` | `xenon --max-absolute B` — any function over cognitive grade B fails (≈ cognitive ≤ 15) |
+| `jscpd` | new-code duplication ≤ 3% |
+
+Build & Test must actually execute these, not just list them:
+
+```bash
+ruff check .
+xenon dogfood_todo_api --max-absolute B --max-modules A --max-average A
+npx jscpd --pattern "**/*.py" --threshold 3 dogfood_todo_api
+```
+
 ## Do NOT Use
 
 > Each row prevents a class of bad code-gen that would defeat the dogfood verification.

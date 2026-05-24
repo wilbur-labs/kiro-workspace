@@ -29,3 +29,7 @@ id_ed25519*
 /tasks/*/
 !/tasks/example/
 !/tasks/dogfood-todo-api/
+# ...but the AI-DLC-generated source under src/ stays ignored (regenerated per
+# fork; only the dogfood metadata files travel with the repo). Without this,
+# uv.lock + generated .py are trackable and a stray `git add` pollutes the repo.
+/tasks/dogfood-todo-api/src/
