@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **dogfood findings (M1 verification run)** — two gaps surfaced by the first real kiro-cli dogfood run, fixed in steering:
+  - `code-quality.md` Layer C was a paper rule — it said "run the reviewer" with no invocation mechanism, so the primary agent silently skipped it during construction. Now specifies the executable path (delegate to `code-quality-reviewer` via the `subagent` tool in blocking mode, per `agent-delegation.md`) plus a mandatory self-check: if the reviewer can't be invoked, raise a blocker CR and do NOT close step 7. A gate that only runs when the agent remembers it is not a gate. (The `subagent` tool itself is added to `agent.json.tpl` in the companion hotfix.)
+  - `cross-unit-smoke.md` gains an anti-pattern: overriding the unit-under-test's own calling code (e.g. `dependency_overrides` replacing the consumer's real dependency with a fixture copy) makes smoke exercise the copy, not the generated code. Litmus test added — break the real consumer code; if smoke still passes, it isn't testing it.
+
 ### Added
 
 - **M1.9 #9-A** — `.kiro/steering/code-quality.md`: a three-layer code-quality gate (prevent / detect / measure). **Layer A (prevent)** ships 10 codegen constraints loaded during code-generation — reuse over creation (search before adding any function/class/schema/validator/abstraction/dependency), validate once at trust boundaries (no controller/service/repository re-validation), no speculative abstractions for a single call site, no unverified dependencies, follow existing error-handling boundaries, complete the edit graph, no placeholders, never hallucinate APIs. Core principle: make the model prove there's no better home in existing code before adding anything new.
