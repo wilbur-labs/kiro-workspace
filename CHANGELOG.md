@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **agent.json.tpl** — fix two bugs that made every `new-task.sh`-generated agent fail to load in kiro-cli: (1) removed the invalid `_comment_tools` / `_comment_allowedTools` keys (kiro-cli's agent schema rejects unknown fields), and (2) corrected the `prompt` path from `file://.kiro/prompts/{{TASK_NAME}}.md` (kiro-cli resolves it relative to the agent dir → `.kiro/agents/.kiro/prompts/...`, not found) to `file://../prompts/{{TASK_NAME}}.md`. Surfaced by the first real `kiro-cli` load of a template-generated agent during the dogfood run. `example.json` and the M1.9 reviewer were unaffected — they already used the relative form with no comment keys.
+
 ### Added
 
 - **M1.9 #9-A** — `.kiro/steering/code-quality.md`: a three-layer code-quality gate (prevent / detect / measure). **Layer A (prevent)** ships 10 codegen constraints loaded during code-generation — reuse over creation (search before adding any function/class/schema/validator/abstraction/dependency), validate once at trust boundaries (no controller/service/repository re-validation), no speculative abstractions for a single call site, no unverified dependencies, follow existing error-handling boundaries, complete the edit graph, no placeholders, never hallucinate APIs. Core principle: make the model prove there's no better home in existing code before adding anything new.
