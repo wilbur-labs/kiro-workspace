@@ -9,7 +9,8 @@
     "grep",
     "glob",
     "code",
-    "web_fetch"
+    "web_fetch",
+    "subagent"
   ],
 
   "allowedTools": [

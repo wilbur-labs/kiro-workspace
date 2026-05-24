@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **agent.json.tpl** — fix two bugs that made every `new-task.sh`-generated agent fail to load in kiro-cli: (1) removed the invalid `_comment_tools` / `_comment_allowedTools` keys (kiro-cli's agent schema rejects unknown fields), and (2) corrected the `prompt` path from `file://.kiro/prompts/{{TASK_NAME}}.md` (kiro-cli resolves it relative to the agent dir → `.kiro/agents/.kiro/prompts/...`, not found) to `file://../prompts/{{TASK_NAME}}.md`. Surfaced by the first real `kiro-cli` load of a template-generated agent during the dogfood run. `example.json` and the M1.9 reviewer were unaffected — they already used the relative form with no comment keys.
+- **agent.json.tpl** — fix two bugs that made every `new-task.sh`-generated agent fail to load in kiro-cli: (1) removed the invalid `_comment_tools` / `_comment_allowedTools` keys (kiro-cli's agent schema rejects unknown fields), and (2) corrected the `prompt` path from `file://.kiro/prompts/{{TASK_NAME}}.md` (kiro-cli resolves it relative to the agent dir → `.kiro/agents/.kiro/prompts/...`, not found) to `file://../prompts/{{TASK_NAME}}.md`. Surfaced by the first real `kiro-cli` load of a template-generated agent during the dogfood run. `example.json` and the M1.9 reviewer were unaffected — they already used the relative form with no comment keys. Also added the `subagent` tool to the template's tool list so generated agents can delegate to `code-quality-reviewer` (M1.9 Layer C): the reviewer gate previously had no invocation path because the primary agent lacked the delegation tool, so it was silently skipped (found during the dogfood run).
 
 ### Added
 
