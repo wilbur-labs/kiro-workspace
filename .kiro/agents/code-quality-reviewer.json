@@ -1,0 +1,23 @@
+{
+  "name": "code-quality-reviewer",
+  "description": "Reviews AI-generated code for the semantic-level design problems linters, type-checkers, and SAST miss: semantic duplication, cross-file duplicated validation, speculative abstraction, and defensive over-coding. Invoked after per-unit code-generation step 7 (Layer C of .kiro/steering/code-quality.md). Read-only — emits findings, does not edit code.",
+  "prompt": "file://../prompts/code-quality-reviewer.md",
+
+  "tools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "code"
+  ],
+
+  "allowedTools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "resources": [
+    "file://.kiro/steering/code-quality.md"
+  ],
+  "welcomeMessage": "code-quality-reviewer ready. Point me at the unit diff to review."
+}
