@@ -26,7 +26,8 @@ Organize multiple AI agents, shared context, learned memories, skills, and task 
 │   ├── locale-override.md           # Chinese interaction + JST timestamps + AI-DLC output path
 │   ├── change-management.md         # CR-log + phase-approval gate
 │   ├── interface-contracts.md       # Mandatory contract freeze at end of INCEPTION
-│   └── cross-unit-smoke.md          # Per-unit smoke + Build&Test must actually run
+│   ├── cross-unit-smoke.md          # Per-unit smoke + Build&Test must actually run
+│   └── code-quality.md              # 3-layer quality gate: codegen rules + reviewer + tooling
 │
 ├── aws-aidlc-rule-details/          # AI-DLC detail rules (referenced on demand)
 │   ├── common/                      # Welcome msg, QA format, validation
@@ -115,6 +116,8 @@ tasks/
 | Read the CR-type definitions and phase gate | `.kiro/steering/change-management.md` |
 | Understand the mandatory Interface Contracts stage | `.kiro/steering/interface-contracts.md` |
 | Understand the per-unit cross-unit smoke + Build&Test must-actually-run rule | `.kiro/steering/cross-unit-smoke.md` |
+| Understand the 3-layer code-quality gate (codegen rules / reviewer / tooling thresholds) | `.kiro/steering/code-quality.md` |
+| Tune what the code-quality reviewer flags | `.kiro/prompts/code-quality-reviewer.md` + `.kiro/agents/code-quality-reviewer.json` |
 | See how the agent decides whether to propose AI-DLC for a new request | `.kiro/skills/aidlc-auto-trigger.md` |
 | Change global env info (URLs, team, tools) | `.kiro/shared/SHARED-CONTEXT.md` |
 | Tune an agent's persona / decision principles / communication style | `.kiro/prompts/<name>.md` |

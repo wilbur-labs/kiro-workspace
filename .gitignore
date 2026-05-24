@@ -13,10 +13,13 @@ id_ed25519*
 !**/aidlc-docs/.gitkeep
 
 # User-generated content (not part of template)
+# (code-quality-reviewer is template-shipped, M1.9 — kept out of the wildcard ignore)
 /.kiro/agents/*.json
 !/.kiro/agents/example.json
+!/.kiro/agents/code-quality-reviewer.json
 /.kiro/prompts/*.md
 !/.kiro/prompts/example.md
+!/.kiro/prompts/code-quality-reviewer.md
 /.kiro/learned/LEARNED.md
 /.kiro/shared/SHARED-CONTEXT.md
 

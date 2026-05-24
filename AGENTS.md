@@ -20,7 +20,8 @@ This is a **multi-agent workspace** for managing several projects under a single
 │   ├── locale-override.md             # Chinese interaction + JST + per-task aidlc-docs
 │   ├── change-management.md           # CR-log + phase-approval gate (M1.2.5)
 │   ├── interface-contracts.md         # Mandatory contract freeze at end of INCEPTION (M1.3)
-│   └── cross-unit-smoke.md            # Per-unit smoke + Build&Test must actually run (M1.3)
+│   ├── cross-unit-smoke.md            # Per-unit smoke + Build&Test must actually run (M1.3)
+│   └── code-quality.md                # 3-layer quality gate: codegen rules + reviewer + tooling (M1.9)
 ├── aws-aidlc-rule-details/            # AI-DLC detail rules (loaded on demand)
 ├── agents/                            # Per-project agent definitions
 ├── prompts/                           # Per-agent system prompts (referenced via file://)
@@ -105,6 +106,7 @@ pre-commit install
 2c. **Interface freeze**: INCEPTION cannot close until every unit has a machine-readable contract under `aidlc-docs/inception/application-design/contracts/<unit>.{yaml,py,ts}` and the cross-unit review is clean. See `.kiro/steering/interface-contracts.md`.
 2d. **Smoke + Build&Test discipline**: per-unit code-gen step 7 requires passing smoke against any upstream unit already generated; Build & Test is incomplete until test commands have actually been executed and the results captured. See `.kiro/steering/cross-unit-smoke.md`.
 2e. **AI-DLC proposal**: at the start of a fresh session, detect the request shape (new system / feature / refactor / bug-fix / spike / ops) per `.kiro/skills/aidlc-auto-trigger.md` and PROPOSE the appropriate depth in one short message. User keeps full veto power; never start AI-DLC silently.
+2f. **Code-quality gate**: codegen follows the constraints in `.kiro/steering/code-quality.md` (Layer A — reuse over creation, validate once, no speculative abstractions). After per-unit code-gen step 7 smoke passes, run the `code-quality-reviewer` agent (Layer C — semantic duplication / cross-file validation / over-abstraction / defensive over-coding); a `Request changes` verdict blocks closing step 7. Build & Test enforces the tooling thresholds (Layer B) declared in `tech-env.md`. Optimize for adoptability (≤5 evidenced findings), not finding count.
 3. **AI-DLC artifacts**: Generate under `tasks/<name>/aidlc-docs/`, NOT repository root.
 4. **Learning**: Run the layer decision tree in `.kiro/skills/memory-layering.md` before writing. Project-specific → `tasks/<name>/learned.md`. Cross-task reusable → `.kiro/learned/LEARNED.md` (with "Why cross-task" line). Follow `.kiro/skills/auto-learn.md` archival rules.
 5. **Hooks**: Spawn hooks load RESUME, SHARED-CONTEXT, per-task learned, cross-task LEARNED. Don't duplicate that content in chat.
