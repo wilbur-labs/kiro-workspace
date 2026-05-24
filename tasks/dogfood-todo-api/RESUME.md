@@ -22,10 +22,10 @@ Before running `kiro-cli chat --agent dogfood-todo-api`, do this:
 
 > Update each time you pause. The agentSpawn hook also reads `aidlc-docs/aidlc-state.md`.
 
-- Phase: `n/a` (not yet started)
-- Stage: `n/a`
-- Unit: `n/a`
-- Next unchecked step: start `kiro-cli chat --agent dogfood-todo-api`, expect AI-DLC depth proposal
+- Phase: `construction` (verification run complete — intentionally NOT approved into operations; this is a harness, not a real ship)
+- Verification run done: 2026-05-24 (real kiro-cli 2.2.0)
+- PASS: #4 auto-trigger · #1 contracts+freeze · #2 smoke happy+build&test · #9 reviewer component · #10 CR-log+phase-gate
+- FINDINGS (see ## Findings): #9 reviewer auto-invocation missing · #2 smoke overrides the consumer code under test
 
 ## M1 Verification Checklist
 
@@ -43,17 +43,17 @@ Each row maps to one M0 audit candidate. **Bold** rows are the ones dogfood is b
 
 ### Verified by this dogfood run (the bold-faced four)
 
-- [ ] **#1 Interface Contracts freeze (M1.3)** — at the end of inception, three contract files appear under `aidlc-docs/inception/application-design/contracts/`:
+- [x] **#1 Interface Contracts freeze (M1.3)** ✅ PASS (3 contracts + cross-unit consumer review + freeze gate all verified) — at the end of inception, three contract files appear under `aidlc-docs/inception/application-design/contracts/`:
   - [ ] `auth.yaml` (OpenAPI) — login + token-verify endpoints
   - [ ] `todo-crud.yaml` (OpenAPI) — todo CRUD endpoints
   - [ ] `notification.py` (Pydantic) — notify(user_id, message) call signature
   - [ ] Agent runs cross-unit consumer-perspective review and asks user to approve the set before transitioning to CONSTRUCTION.
-- [ ] **#2 Cross-unit smoke + Build & Test must-run (M1.3)**:
+- [~] **#2 Cross-unit smoke + Build & Test must-run (M1.3)** ⚠️ happy path + build&test PASS (18 tests, log captured); **fail path = FINDING** (smoke overrides the consumer code under test — see ## Findings):
   - [ ] After `todo-crud` code-gen step 7 completes, agent generates `src/tests/smoke/test_todo_against_auth.py` (or equivalent) that hits the **real** `auth` service for a token — not a mock — and runs it as part of closing step 7.
   - [ ] Reviewer manually breaks `todo-crud`'s contract handling (e.g. renames the JWT field it expects). Smoke fails, step 7 is blocked, agent classifies as `bug` CR.
   - [ ] Build & Test stage runs the full pytest suite (`uv run pytest`) — actual test execution, captured to `aidlc-docs/construction/build-and-test/test-run-<timestamp>.log` with pass/fail counts reported.
-- [ ] **#4 AI-DLC auto-trigger (M1.4)** — fresh `kiro-cli chat --agent dogfood-todo-api` session, agent's first message proposes `standard` depth with one-line rationale. (If you say `n`, agent must not re-propose.)
-- [ ] **#10 Change Management CR-log + phase gate (M1.2.5)**:
+- [x] **#4 AI-DLC auto-trigger (M1.4)** ✅ PASS — fresh session, agent proposed `standard` depth with one-line rationale, kept user veto. (If you say `n`, agent must not re-propose.)
+- [x] **#10 Change Management CR-log + phase gate (M1.2.5)** ✅ PASS (capture → gate block → triage → release, full loop verified):
   - [ ] Mid-construction, say "顺手加 CSV 导出" — agent captures as `CR-N | OPEN | UNCLASSIFIED` row in `aidlc-docs/change-requests.md` without breaking flow.
   - [ ] Attempt to approve construction phase with OPEN CR — agent refuses, lists the CR, prompts for triage.
   - [ ] Classify CR-N as `creep / accept` — agent requires `vision.md` + `requirements.md` updates **before** continuing; `Propagated To` filled in.
@@ -61,7 +61,7 @@ Each row maps to one M0 audit candidate. **Bold** rows are the ones dogfood is b
 
 ### Verified by this dogfood run (#9 — M1.9 landed on main 98327ec)
 
-- [ ] **#9 Code-quality 3-layer gate (M1.9)** — confirm all three layers fire:
+- [~] **#9 Code-quality 3-layer gate (M1.9)** ⚠️ reviewer COMPONENT PASS (caught seeded cross-file dup with evidence); **auto-invocation = FINDING** (Layer C never fired — see ## Findings):
   - [ ] **Layer A (prevent)** — during code-gen the agent honors `.kiro/steering/code-quality.md`: when a needed validator/helper already exists it reuses instead of re-implementing (watch it search first), and it declines to add a factory/manager for a single call site. At least one observable instance of each.
   - [ ] **Layer C (detect)** — after a unit's step 7 smoke passes, the `code-quality-reviewer` agent runs and emits the fixed four-block output (verdict / must-fix / suggested / verification), ≤5 findings. Plant a deliberate semantic duplicate (e.g. `todo-crud` re-validates the JWT that `auth` already owns); confirm the reviewer flags it as a cross-file finding **with evidence** — something ruff/eslint would not catch.
   - [ ] A `Request changes` verdict (≥1 Blocker) blocks closing step 7; the finding is fixed or converted to a CR via `change-management.md`.
@@ -78,9 +78,13 @@ Don't silently fix and re-run. Each failure is itself a finding:
 
 ## Findings
 
-> Empty until a dogfood run produces them. One bullet per failure, with row number + observed behavior + link to issue.
+> One bullet per failure, with row number + observed behavior + link to issue.
 
-(none yet)
+- **#9 Layer C (detect)** — code-quality-reviewer agent was never invoked during construction. `.kiro/agents/code-quality-reviewer.json` exists (added in M1.9), but `.kiro/steering/code-quality.md` Layer C says "run the reviewer agent" without defining the invocation mechanism within an AI-DLC flow (what tool/command/delegation protocol does the primary agent use to spawn the reviewer?). The primary agent encountered an undefined call path and **silently skipped** the gate instead of reporting a blocker per `.kiro/skills/raise-cr.md` agent-side self-check. Root causes: (1) steering defines WHAT but not HOW to delegate to another agent mid-flow; (2) agent failed to self-check and raise a CR when it couldn't execute a required gate.
+
+- **#2 cross-unit smoke (fail path)** — smoke does NOT exercise the unit-under-test's real consumer code. `tests/smoke/conftest.py` (`todo_client` fixture) overrides `todo_crud.deps.get_current_user` with a parallel re-implementation defined inside the fixture (`_get_current_user_via_real_auth`). Proof: breaking the real `deps.py` (expected field `user_id`→`sub`) → smoke still PASSES; breaking the fixture's copy → smoke FAILS (KeyError at conftest.py:51). So auth is real (in-process ASGI ✓) but the todo-crud calling code M1.3 #2 means to exercise is mocked out, and the fixture copy is itself semantic duplication of deps.py. AI test anti-pattern: `dependency_overrides` used to make a cross-unit test "runnable" silently replaces the consumer code, defeating the smoke's purpose. `cross-unit-smoke.md` bans mocking the *upstream* unit but does not forbid overriding the *consumer's own* calling code. Fix direction: drive the unit's real dependency (point `AUTH_SERVICE_URL` at an in-process transport / inject the ASGI transport into the real `get_current_user`) instead of overriding `get_current_user` wholesale.
+
+- **#9 reviewer capability (PASS — recorded for completeness)** — invoked directly, `code-quality-reviewer` correctly caught a seeded cross-file semantic duplicate (todo-crud re-implementing auth's `decode_access_token`) as a Blocker WITH evidence (`auth/tokens.py:15-19`), flagged the dead code, downgraded an unprovable point to "needs confirmation", emitted the fixed 4-block format with ≤5 findings. The reviewer COMPONENT works; only its auto-invocation (the #9 finding above) is missing.
 
 ## AI-DLC Artifacts
 
