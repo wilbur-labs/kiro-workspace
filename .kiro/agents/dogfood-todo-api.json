@@ -1,7 +1,7 @@
 {
-  "name": "{{TASK_NAME}}",
-  "description": "Agent for {{TASK_NAME}} — replace with real description.",
-  "prompt": "file://../prompts/{{TASK_NAME}}.md",
+  "name": "dogfood-todo-api",
+  "description": "Agent for dogfood-todo-api — replace with real description.",
+  "prompt": "file://../prompts/dogfood-todo-api.md",
   "tools": [
     "fs_read",
     "fs_write",
@@ -19,8 +19,8 @@
     "code"
   ],
   "resources": [
-    "file://tasks/{{TASK_NAME}}/WORKFLOW.md",
-    "file://tasks/{{TASK_NAME}}/RESUME.md",
+    "file://tasks/dogfood-todo-api/WORKFLOW.md",
+    "file://tasks/dogfood-todo-api/RESUME.md",
     "skill://.kiro/skills/auto-learn.md",
     "skill://.kiro/skills/memory-layering.md",
     "skill://.kiro/skills/raise-cr.md",
@@ -36,19 +36,19 @@
         "description": "Surface construction-phase mandatory gates at spawn (steering files are not read mid-flow — this is the #9 fix)"
       },
       {
-        "command": "echo '=== TASK METADATA ===' && cat ./tasks/{{TASK_NAME}}/task.yaml 2>/dev/null || echo '⚠ tasks/{{TASK_NAME}}/task.yaml missing — re-run scripts/new-task.sh or copy from .kiro/templates/task/task.yaml.tpl'",
+        "command": "echo '=== TASK METADATA ===' && cat ./tasks/dogfood-todo-api/task.yaml 2>/dev/null || echo '⚠ tasks/dogfood-todo-api/task.yaml missing — re-run scripts/new-task.sh or copy from .kiro/templates/task/task.yaml.tpl'",
         "description": "Load task metadata (project_path, repo_url, branch_prefix) — single source of truth"
       },
       {
-        "command": "cat ./tasks/{{TASK_NAME}}/RESUME.md 2>/dev/null | head -40",
+        "command": "cat ./tasks/dogfood-todo-api/RESUME.md 2>/dev/null | head -40",
         "description": "Load task state"
       },
       {
-        "command": "cat ./tasks/{{TASK_NAME}}/aidlc-docs/aidlc-state.md 2>/dev/null | head -20",
+        "command": "cat ./tasks/dogfood-todo-api/aidlc-docs/aidlc-state.md 2>/dev/null | head -20",
         "description": "Load AI-DLC state (machine-maintained source of truth while AI-DLC is running)"
       },
       {
-        "command": "echo '=== Open CRs (must clear before phase approval — see .kiro/steering/change-management.md) ===' && grep -E '^\\| CR-[0-9]+\\b.* OPEN ' ./tasks/{{TASK_NAME}}/aidlc-docs/change-requests.md 2>/dev/null | head -10",
+        "command": "echo '=== Open CRs (must clear before phase approval — see .kiro/steering/change-management.md) ===' && grep -E '^\\| CR-[0-9]+\\b.* OPEN ' ./tasks/dogfood-todo-api/aidlc-docs/change-requests.md 2>/dev/null | head -10",
         "description": "Surface open change requests that block the next phase-approval gate"
       },
       {
@@ -56,7 +56,7 @@
         "description": "Load workspace-level shared context"
       },
       {
-        "command": "cat ./tasks/{{TASK_NAME}}/learned.md 2>/dev/null",
+        "command": "cat ./tasks/dogfood-todo-api/learned.md 2>/dev/null",
         "description": "Load task-specific learnings (project schema, domain quirks)"
       },
       {
@@ -65,5 +65,5 @@
       }
     ]
   },
-  "welcomeMessage": "{{TASK_NAME}} agent ready. What would you like to do?"
+  "welcomeMessage": "dogfood-todo-api agent ready. What would you like to do?"
 }
