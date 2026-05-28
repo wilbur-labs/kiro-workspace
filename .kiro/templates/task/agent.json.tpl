@@ -1,8 +1,7 @@
 {
   "name": "{{TASK_NAME}}",
   "description": "Agent for {{TASK_NAME}} — replace with real description.",
-  "prompt": "file://.kiro/prompts/{{TASK_NAME}}.md",
-  "_comment_tools": "All tools the agent CAN use",
+  "prompt": "file://../prompts/{{TASK_NAME}}.md",
   "tools": [
     "fs_read",
     "fs_write",
@@ -13,7 +12,6 @@
     "web_fetch"
   ],
 
-  "_comment_allowedTools": "Tools that can execute without user confirmation",
   "allowedTools": [
     "fs_read",
     "grep",
@@ -33,6 +31,10 @@
   ],
   "hooks": {
     "agentSpawn": [
+      {
+        "command": "echo '=== CONSTRUCTION-PHASE MANDATORY GATES (steering is not auto-read mid-flow — load these now) ===' && echo '- Per-unit code-gen step 7: (1) cross-unit smoke vs the REAL upstream unit [cross-unit-smoke.md Part 1], then (2) code-quality-reviewer via the use_subagent tool [code-quality.md Layer C]. Both must pass before closing step 7.' && echo '- Build and Test: actually execute the suite + capture the log [cross-unit-smoke.md Part 2]; enforce the ruff/xenon/jscpd thresholds from tech-env Code Quality Tooling [code-quality.md Layer B].' && echo '- If you cannot run a gate, raise a blocker CR per raise-cr.md — do NOT silently skip it.'",
+        "description": "Surface construction-phase mandatory gates at spawn (steering files are not read mid-flow — this is the #9 fix)"
+      },
       {
         "command": "echo '=== TASK METADATA ===' && cat ./tasks/{{TASK_NAME}}/task.yaml 2>/dev/null || echo '⚠ tasks/{{TASK_NAME}}/task.yaml missing — re-run scripts/new-task.sh or copy from .kiro/templates/task/task.yaml.tpl'",
         "description": "Load task metadata (project_path, repo_url, branch_prefix) — single source of truth"
