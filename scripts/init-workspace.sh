@@ -37,27 +37,35 @@ copy_if_missing .kiro/shared/SHARED-CONTEXT.md.tpl  .kiro/shared/SHARED-CONTEXT.
 copy_if_missing .kiro/learned/LEARNED.md.tpl        .kiro/learned/LEARNED.md
 
 echo
-echo "==> Per-task learned.md (for any existing task missing it)"
-TASK_TPL=".kiro/templates/task/learned.md.tpl"
-if [[ ! -f "$TASK_TPL" ]]; then
-  echo "  ! per-task template missing: $TASK_TPL (skipping)" >&2
-else
-  found_any=0
-  for task_dir in tasks/*/; do
-    [[ -d "$task_dir" ]] || continue
-    task_name="$(basename "$task_dir")"
-    [[ "$task_name" == "example" ]] && continue
-    dst="${task_dir}learned.md"
-    if [[ -f "$dst" ]]; then
-      echo "  · skip   $dst"
-    else
-      sed "s|{{TASK_NAME}}|$task_name|g" "$TASK_TPL" > "$dst"
-      echo "  + create $dst"
-    fi
-    found_any=1
-  done
-  [[ $found_any -eq 0 ]] && echo "  (no tasks/ entries yet — run scripts/new-task.sh to scaffold one)"
-fi
+echo "==> Per-task files (for any existing task missing them)"
+LEARNED_TPL=".kiro/templates/task/learned.md.tpl"
+CR_TPL=".kiro/templates/task/change-requests.md.tpl"
+
+instantiate_per_task() {
+  local src_tpl="$1" rel_dst="$2" task_dir="$3" task_name="$4"
+  if [[ ! -f "$src_tpl" ]]; then return 0; fi
+  local dst="${task_dir}${rel_dst}"
+  local dst_parent
+  dst_parent="$(dirname "$dst")"
+  mkdir -p "$dst_parent"
+  if [[ -f "$dst" ]]; then
+    echo "  · skip   $dst"
+  else
+    sed "s|{{TASK_NAME}}|$task_name|g" "$src_tpl" > "$dst"
+    echo "  + create $dst"
+  fi
+}
+
+found_any=0
+for task_dir in tasks/*/; do
+  [[ -d "$task_dir" ]] || continue
+  task_name="$(basename "$task_dir")"
+  [[ "$task_name" == "example" ]] && continue
+  instantiate_per_task "$LEARNED_TPL" "learned.md"                    "$task_dir" "$task_name"
+  instantiate_per_task "$CR_TPL"      "aidlc-docs/change-requests.md" "$task_dir" "$task_name"
+  found_any=1
+done
+[[ $found_any -eq 0 ]] && echo "  (no tasks/ entries yet — run scripts/new-task.sh to scaffold one)"
 
 echo
 echo "Done. Next:"

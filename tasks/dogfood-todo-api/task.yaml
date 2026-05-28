@@ -1,0 +1,22 @@
+# ⚠️ DOGFOOD TASK — Edit `project_path` and `default_workdir` BEFORE
+# running `kiro-cli chat --agent dogfood-todo-api`.
+#
+# This task is the M1 end-to-end verification harness. It ships with the
+# template repo (so anyone forking can rerun the dogfood pass), but the
+# `project_path` necessarily depends on where you cloned this repo. The
+# placeholder below intentionally fails fast — AI-DLC will read it and
+# point you here when generating code.
+#
+# Suggested value (replace <repo-root> with your absolute clone path):
+#   project_path: <repo-root>/tasks/dogfood-todo-api/src
+# That keeps the generated Todo-API source under the dogfood task dir,
+# which is gitignored (per `.gitignore` `**/aidlc-docs/*` and the
+# generic `/tasks/*/` rule — only the dogfood metadata files are
+# whitelisted). Each fork's generated code stays local.
+
+name: dogfood-todo-api
+project_path: <edit-me-with-your-fork-path>/tasks/dogfood-todo-api/src
+repo_url: ""             # leave blank — dogfood code is not pushed
+branch_prefix: dogfood/  # local-only branches, never pushed
+default_workdir: <edit-me-with-your-fork-path>/tasks/dogfood-todo-api/src
+created: 2026-05-24

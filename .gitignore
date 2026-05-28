@@ -13,16 +13,23 @@ id_ed25519*
 !**/aidlc-docs/.gitkeep
 
 # User-generated content (not part of template)
-# (code-quality-reviewer is template-shipped, M1.9 — kept out of the wildcard ignore)
+# (code-quality-reviewer + dogfood-todo-api are template-shipped — kept out of the wildcard ignore)
 /.kiro/agents/*.json
 !/.kiro/agents/example.json
 !/.kiro/agents/code-quality-reviewer.json
+!/.kiro/agents/dogfood-todo-api.json
 /.kiro/prompts/*.md
 !/.kiro/prompts/example.md
 !/.kiro/prompts/code-quality-reviewer.md
+!/.kiro/prompts/dogfood-todo-api.md
 /.kiro/learned/LEARNED.md
 /.kiro/shared/SHARED-CONTEXT.md
 
 # Task directories (users create their own)
 /tasks/*/
 !/tasks/example/
+!/tasks/dogfood-todo-api/
+# ...but the AI-DLC-generated source under src/ stays ignored (regenerated per
+# fork; only the dogfood metadata files travel with the repo). Without this,
+# uv.lock + generated .py are trackable and a stray `git add` pollutes the repo.
+/tasks/dogfood-todo-api/src/
