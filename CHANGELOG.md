@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Deferred
+
+- **M1.2 #6.c** — `agent.json.tpl` `toolsSettings.allowedPaths` for fs scope restriction is **deferred**. Audit gap surfaced: kiro-cli docs use tool names `write` / `shell` / `aws` + MCP tools and glob `allowedPaths` syntax, but the repo's `example.json` uses `fs_read` / `fs_write` / `execute_bash` (Amazon Q Developer CLI naming). Without a local kiro-cli to smoke-test the actual schema, picking either form risks producing an `agent.json` that won't load. To be revisited when a kiro-cli environment is available.
+
+## [0.2.0] - 2026-05-29
+
 ### Fixed
 
 - **agent.json.tpl** — fix two bugs that made every `new-task.sh`-generated agent fail to load in kiro-cli: (1) removed the invalid `_comment_tools` / `_comment_allowedTools` keys (kiro-cli's agent schema rejects unknown fields), and (2) corrected the `prompt` path from `file://.kiro/prompts/{{TASK_NAME}}.md` (kiro-cli resolves it relative to the agent dir → `.kiro/agents/.kiro/prompts/...`, not found) to `file://../prompts/{{TASK_NAME}}.md`. Surfaced by the first real `kiro-cli` load of a template-generated agent during the dogfood run. `example.json` and the M1.9 reviewer were unaffected — they already used the relative form with no comment keys. A dogfood rerun then exposed the **real** reason M1.9 Layer C was skipped: the agent never *reads* `code-quality.md` mid-flow (kiro steering is not auto-loaded into the construction context), and the delegation tool is the builtin `use_subagent` — not `subagent`, an earlier guess kiro silently ignored. Fix: an `agentSpawn` hook now surfaces the construction-phase mandatory gates at spawn (cross-unit smoke + `code-quality-reviewer` via `use_subagent` + Build&Test tooling), so the gates load even though the steering files themselves don't.
@@ -48,7 +54,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **M1.2 docs** — README.md / AGENTS.md: documented `task.yaml`, the `--no-aidlc` flag, `Current AI-DLC Stage` section, and prompt persona/principles/style.
 - **M1.1 #11** — `.kiro/skills/auto-learn.md`: added an applicability-filter decision tree that routes learnings to the correct layer before write, plus a promotion flow (per-task → cross-task with a mandatory "Why cross-task" justification line). Discourages copy-paste duplication across layers.
 - **M1.1 #11** — README.md / AGENTS.md: documented the memory-layering model, the `init-workspace.sh` bootstrap step, and the per-task `learned.md` convention.
-
-### Deferred
-
-- **M1.2 #6.c** — `agent.json.tpl` `toolsSettings.allowedPaths` for fs scope restriction is **deferred**. Audit gap surfaced: kiro-cli docs use tool names `write` / `shell` / `aws` + MCP tools and glob `allowedPaths` syntax, but the repo's `example.json` uses `fs_read` / `fs_write` / `execute_bash` (Amazon Q Developer CLI naming). Without a local kiro-cli to smoke-test the actual schema, picking either form risks producing an `agent.json` that won't load. To be revisited when a kiro-cli environment is available.
