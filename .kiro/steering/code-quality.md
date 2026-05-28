@@ -69,15 +69,36 @@ Each rule maps to a concrete anti-pattern:
 
 After per-unit code generation, **once Part 1 cross-unit smoke
 (`.kiro/steering/cross-unit-smoke.md`) has passed and before step 7 is closed**,
-run the `code-quality-reviewer` agent over the unit's generated diff.
+the primary agent MUST run the `code-quality-reviewer` agent over the unit's
+generated diff. This is a gate, not a reminder — it must not depend on the agent
+remembering to do it.
 
-- Agent: `.kiro/agents/code-quality-reviewer.json` (prompt:
+**How to invoke (this is the part that makes it executable, not just a rule):**
+
+- Use the `use_subagent` tool (blocking mode) to delegate to `code-quality-reviewer`
+  — see `.kiro/skills/agent-delegation.md`. Pass the unit name + the list of
+  files generated in this unit; do NOT dump full context (the reviewer reads the
+  files itself).
+- `use_subagent` is a kiro **builtin** tool — it does not need to be declared in
+  the agent's `tools` list (an earlier revision guessed a non-existent `subagent`
+  name). The blocker is never a missing tool; it is forgetting to read this gate
+  at all — which the construction-gate `agentSpawn` hook now surfaces.
+- Reviewer config: `.kiro/agents/code-quality-reviewer.json` (prompt:
   `.kiro/prompts/code-quality-reviewer.md`).
-- It looks **only** for the four semantic classes tools miss: semantic
-  duplication, cross-file duplicated validation, speculative abstraction, and
-  defensive over-coding. It does not re-report lint/format/type/style — those
-  are Layer B's job.
-- Output is fixed at four blocks (verdict / must-fix / suggested / verification
+
+**Self-check (mandatory).** Before closing step 7 the agent asks itself: "did the
+reviewer actually run, and did I act on its verdict?" If the reviewer could not be
+invoked for any reason (missing tool, missing agent, error), the agent **raises a
+blocker CR per `.kiro/skills/raise-cr.md` and does NOT close step 7.** Silently
+skipping a gate it cannot execute is the exact failure this rule exists to prevent
+— a gate that only runs when the agent remembers it is not a gate.
+
+The reviewer:
+
+- looks **only** for the four semantic classes tools miss: semantic duplication,
+  cross-file duplicated validation, speculative abstraction, and defensive
+  over-coding. It does not re-report lint/format/type/style — those are Layer B's job.
+- emits a fixed four-block output (verdict / must-fix / suggested / verification
   checklist), capped at 5 findings.
 
 **Gate behavior:**
