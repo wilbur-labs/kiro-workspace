@@ -73,7 +73,7 @@ Each row maps to one M0 audit candidate. **Bold** rows are the ones dogfood is b
 Don't silently fix and re-run. Each failure is itself a finding:
 
 1. Note the row number + the actual observed behavior in this RESUME's **Findings** section below.
-2. If it's a steering / scaffold defect — raise an issue on `wilbur-labs/kiro-workspace-template` (link the row). Don't tweak the dogfood vision/tech-env to make the row pass; that masks the defect.
+2. If it's a steering / scaffold defect — raise an issue on `wilbur-labs/kiro-workspace` (link the row). Don't tweak the dogfood vision/tech-env to make the row pass; that masks the defect.
 3. If it's a "row written wrong" defect (the expectation was unrealistic) — raise an issue + propose a PR to fix the row text.
 
 ## Findings

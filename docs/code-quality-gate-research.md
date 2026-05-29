@@ -2,7 +2,7 @@
 
 **日期**：2026-05-23
 **作者**：codex (GPT-5.5) via `codex exec`，由 kiro-workflow task 主 agent 编排
-**目的**：为 `kiro-workspace-template` 设计 **A+B+C 三层 defense-in-depth** 代码品质 gate
+**目的**：为 `kiro-workspace` 设计 **A+B+C 三层 defense-in-depth** 代码品质 gate
 
 ---
 
@@ -25,7 +25,7 @@
 Reading additional input from stdin...
 OpenAI Codex v0.133.0
 --------
-workdir: /home/sharp/projects/kiro-workspace-template
+workdir: /home/sharp/projects/kiro-workspace
 model: gpt-5.5
 provider: openai
 approval: never
@@ -299,7 +299,7 @@ Aider：https://aider.chat/docs/usage/conventions.html
 Reading additional input from stdin...
 OpenAI Codex v0.133.0
 --------
-workdir: /home/sharp/projects/kiro-workspace-template
+workdir: /home/sharp/projects/kiro-workspace
 model: gpt-5.5
 provider: openai
 approval: never
@@ -783,7 +783,7 @@ npx jscpd --pattern "**/*.py" --threshold 3 src
 Reading additional input from stdin...
 OpenAI Codex v0.133.0
 --------
-workdir: /home/sharp/projects/kiro-workspace-template
+workdir: /home/sharp/projects/kiro-workspace
 model: gpt-5.5
 provider: openai
 approval: never
@@ -1204,7 +1204,7 @@ Aider 不是专门的 code review SaaS，但它的 review/ask 模式很值得学
 
 ---
 
-# 综合建议（kiro-workspace-template 落地路径）
+# 综合建议（kiro-workspace 落地路径）
 
 ## 整体观察
 

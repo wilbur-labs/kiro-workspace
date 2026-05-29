@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap a fresh fork of kiro-workspace-template.
+# Bootstrap a fresh fork of kiro-workspace.
 #
 # Idempotent: safe to re-run. Creates missing user-instance files from
 # bundled .tpl skeletons. Existing files are never overwritten.

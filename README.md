@@ -1,4 +1,4 @@
-# kiro-workspace-template
+# kiro-workspace
 
 A multi-agent workspace architecture for [kiro-cli](https://github.com/kirocli/kiro), pre-integrated with [AI-DLC](https://github.com/awslabs/aidlc-workflows) workflow rules.
 

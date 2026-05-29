@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-dogfood-todo-api is a single-user Todo REST API decomposed into exactly three units (`auth`, `todo-crud`, `notification`). It exists so that a fork of `wilbur-labs/kiro-workspace-template` can rerun the M1 verification pass end-to-end and confirm every gate fires. The expected outcome is a runnable Python service (under `tasks/dogfood-todo-api/src/`) plus an auditable trail of CRs, contracts, smoke runs, and Build & Test logs that a reviewer can inspect.
+dogfood-todo-api is a single-user Todo REST API decomposed into exactly three units (`auth`, `todo-crud`, `notification`). It exists so that a fork of `wilbur-labs/kiro-workspace` can rerun the M1 verification pass end-to-end and confirm every gate fires. The expected outcome is a runnable Python service (under `tasks/dogfood-todo-api/src/`) plus an auditable trail of CRs, contracts, smoke runs, and Build & Test logs that a reviewer can inspect.
 
 ## Features In Scope (MVP)
 
@@ -26,8 +26,8 @@ dogfood-todo-api is a single-user Todo REST API decomposed into exactly three un
 
 ## Target Users
 
-- **The template fork operator.** Anyone forking `wilbur-labs/kiro-workspace-template` who wants to confirm M1 gates work before relying on them for real work.
-- **The kiro-workspace-template maintainer.** Reruns dogfood when shipping a new M-milestone to catch regressions in steering.
+- **The template fork operator.** Anyone forking `wilbur-labs/kiro-workspace` who wants to confirm M1 gates work before relying on them for real work.
+- **The kiro-workspace maintainer.** Reruns dogfood when shipping a new M-milestone to catch regressions in steering.
 
 ## Key Success Metrics
 

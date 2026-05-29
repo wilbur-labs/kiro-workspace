@@ -15,7 +15,7 @@ dogfood-todo-api is a verification harness, not a development project. The "work
 1. Stand up the fork: read `vision.md` + `tech-env.md`, edit `task.yaml` to fix paths, spawn the agent.
 2. Let AI-DLC drive inception → construction → operations against the steering rules.
 3. Tick each row in `RESUME.md` → **M1 Verification Checklist** as the corresponding gate fires correctly.
-4. Record failures in `RESUME.md` → **Findings**. Raise an issue on `wilbur-labs/kiro-workspace-template` for each.
+4. Record failures in `RESUME.md` → **Findings**. Raise an issue on `wilbur-labs/kiro-workspace` for each.
 
 ## Trigger
 
