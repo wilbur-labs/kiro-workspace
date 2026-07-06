@@ -82,7 +82,10 @@ remembering to do it.
 - `use_subagent` is a kiro **builtin** tool — it does not need to be declared in
   the agent's `tools` list (an earlier revision guessed a non-existent `subagent`
   name). The blocker is never a missing tool; it is forgetting to read this gate
-  at all — which the construction-gate `agentSpawn` hook now surfaces.
+  at all. These construction gates live in this steering file (auto-loaded at
+  spawn by the kiro-cli rules engine). NOTE: an earlier `agentSpawn`-hook workaround
+  that re-echoed the gates is void — the new Kiro CLI does not inject hook stdout
+  into the model context (context comes from `resources` + steering, not hooks).
 - Reviewer config: `.kiro/agents/code-quality-reviewer.json` (prompt:
   `.kiro/prompts/code-quality-reviewer.md`).
 

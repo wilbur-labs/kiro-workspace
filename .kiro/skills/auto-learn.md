@@ -96,4 +96,4 @@ Applies to `.kiro/learned/LEARNED.md`. Per-task `learned.md` is bounded by task 
    - [2026-03] 12 entries — [archive/2026-03.md](archive/2026-03.md)
    ```
 3. **Keep recent N**: The active `LEARNED.md` should contain at most ~50 most-recent entries.
-4. **Loadable subset**: agentSpawn hooks load `tasks/<name>/learned.md` + `.kiro/learned/LEARNED.md` (not archives) to keep context lean.
+4. **Loadable subset**: agent.json `resources` load `tasks/<name>/learned.md` + `.kiro/learned/LEARNED.md` (not archives) to keep context lean.

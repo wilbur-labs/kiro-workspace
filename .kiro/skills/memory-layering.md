@@ -4,13 +4,15 @@ This workspace splits knowledge across **five layers** to keep agent context lea
 
 ## Layers
 
-| Layer | File | Scope | Lifetime | Loaded by agentSpawn? |
+| Layer | File | Scope | Lifetime | Loaded at spawn? |
 |---|---|---|---|---|
-| **Task state** | `tasks/<name>/RESUME.md` | this task | until task completes | yes (head -40) |
-| **Per-task learned** | `tasks/<name>/learned.md` | this task | until task completes | yes |
-| **Cross-task learned** | `.kiro/learned/LEARNED.md` | all tasks in workspace | persistent (90-day archive) | yes |
-| **Shared context** | `.kiro/shared/SHARED-CONTEXT.md` | workspace env | persistent, manually maintained | yes |
+| **Task state** | `tasks/<name>/RESUME.md` | this task | until task completes | yes — agent.json `resources` (file://) |
+| **Per-task learned** | `tasks/<name>/learned.md` | this task | until task completes | yes — `resources` (file://) |
+| **Cross-task learned** | `.kiro/learned/LEARNED.md` | all tasks in workspace | persistent (90-day archive) | yes — `resources` (file://) |
+| **Shared context** | `.kiro/shared/SHARED-CONTEXT.md` | workspace env | persistent, manually maintained | yes — `resources` (file://) |
 | **Steering / rules** | `.kiro/steering/*.md` | enforced behavior | persistent | via kiro-cli rules engine |
+
+> **载入机制（重要）**：上下文靠 agent.json 的 **`resources` (file://)** 注入，**不是** `agentSpawn` hook——新版 Kiro CLI 的 agentSpawn hook 输出**不进**模型上下文（实测：hook-only 的 task.yaml 加载不到，resources 里的能）。要改「spawn 加载什么」→ 改 agent.json 的 `resources` 列表（不是 hooks）。缺失的 file:// 会静默跳过。
 
 ## When to Write Where
 

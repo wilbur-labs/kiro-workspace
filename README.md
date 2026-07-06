@@ -110,7 +110,7 @@ tasks/
 | Goal | File |
 |------|------|
 | Add a new project/task | Run `scripts/new-task.sh <name> <project-path>` (add `--no-aidlc` to skip vision/tech-env) |
-| Change project path / repo URL / branch prefix for a task | `tasks/<name>/task.yaml` (single source of truth — read by agentSpawn hook) |
+| Change project path / repo URL / branch prefix for a task | `tasks/<name>/task.yaml` (single source of truth — loaded via agent.json `resources`) |
 | Update AI-DLC stage pointer in RESUME | `tasks/<name>/RESUME.md` → `## Current AI-DLC Stage` section |
 | Capture a scope suggestion mid-flow | Append a row to `tasks/<name>/aidlc-docs/change-requests.md` (see `.kiro/skills/raise-cr.md`) |
 | Read the CR-type definitions and phase gate | `.kiro/steering/change-management.md` |
@@ -216,7 +216,7 @@ Run `kiro-cli`, then `/context show` — you should see:
 
 ## Session Recovery
 
-Agents read `RESUME.md` on spawn via `agentSpawn` hooks (paths are relative, no hardcoded `~/`). This ensures continuity across sessions without relying on conversation history.
+Agents load `RESUME.md` (and task.yaml / learned / CR-log / shared / cross-task LEARNED) on spawn via each agent.json's **`resources` (file://)** list — relative paths, no hardcoded `~/`. This ensures continuity across sessions without relying on conversation history. (Note: context is injected through `resources`, **not** `agentSpawn` hooks — the new Kiro CLI does not feed hook stdout into the model context.)
 
 ## Cross-agent Coordination
 

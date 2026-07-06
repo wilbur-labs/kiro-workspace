@@ -63,5 +63,5 @@ Tone:
 ## Environment
 
 > See `tasks/dogfood-todo-api/task.yaml` for `project_path`, `repo_url`,
-> `branch_prefix`, and `default_workdir`. The agentSpawn hook prints them
-> on session start.
+> `branch_prefix`, and `default_workdir`. It's loaded into context at spawn
+> via this agent's `resources` (file://) list.

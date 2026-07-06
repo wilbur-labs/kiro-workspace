@@ -19,8 +19,16 @@
     "code"
   ],
   "resources": [
-    "file://tasks/{{TASK_NAME}}/WORKFLOW.md",
+    "file://tasks/{{TASK_NAME}}/task.yaml",
     "file://tasks/{{TASK_NAME}}/RESUME.md",
+    "file://tasks/{{TASK_NAME}}/WORKFLOW.md",
+    "file://tasks/{{TASK_NAME}}/learned.md",
+    "file://tasks/{{TASK_NAME}}/aidlc-docs/aidlc-state.md",
+    "file://tasks/{{TASK_NAME}}/aidlc-docs/change-requests.md",
+    "file://tasks/{{TASK_NAME}}/vision.md",
+    "file://tasks/{{TASK_NAME}}/tech-env.md",
+    "file://.kiro/shared/SHARED-CONTEXT.md",
+    "file://.kiro/learned/LEARNED.md",
     "skill://.kiro/skills/auto-learn.md",
     "skill://.kiro/skills/memory-layering.md",
     "skill://.kiro/skills/raise-cr.md",
@@ -29,41 +37,5 @@
     "skill://.kiro/skills/agent-delegation.md",
     "skill://.kiro/skills/aidlc-usage-tips.md"
   ],
-  "hooks": {
-    "agentSpawn": [
-      {
-        "command": "echo '=== CONSTRUCTION-PHASE MANDATORY GATES (steering is not auto-read mid-flow — load these now) ===' && echo '- Per-unit code-gen step 7: (1) cross-unit smoke vs the REAL upstream unit [cross-unit-smoke.md Part 1], then (2) code-quality-reviewer via the use_subagent tool [code-quality.md Layer C]. Both must pass before closing step 7.' && echo '- Build and Test: actually execute the suite + capture the log [cross-unit-smoke.md Part 2]; enforce the ruff/xenon/jscpd thresholds from tech-env Code Quality Tooling [code-quality.md Layer B].' && echo '- If you cannot run a gate, raise a blocker CR per raise-cr.md — do NOT silently skip it.'",
-        "description": "Surface construction-phase mandatory gates at spawn (steering files are not read mid-flow — this is the #9 fix)"
-      },
-      {
-        "command": "echo '=== TASK METADATA ===' && cat ./tasks/{{TASK_NAME}}/task.yaml 2>/dev/null || echo '⚠ tasks/{{TASK_NAME}}/task.yaml missing — re-run scripts/new-task.sh or copy from .kiro/templates/task/task.yaml.tpl'",
-        "description": "Load task metadata (project_path, repo_url, branch_prefix) — single source of truth"
-      },
-      {
-        "command": "cat ./tasks/{{TASK_NAME}}/RESUME.md 2>/dev/null | head -40",
-        "description": "Load task state"
-      },
-      {
-        "command": "cat ./tasks/{{TASK_NAME}}/aidlc-docs/aidlc-state.md 2>/dev/null | head -20",
-        "description": "Load AI-DLC state (machine-maintained source of truth while AI-DLC is running)"
-      },
-      {
-        "command": "echo '=== Open CRs (must clear before phase approval — see .kiro/steering/change-management.md) ===' && grep -E '^\\| CR-[0-9]+\\b.* OPEN ' ./tasks/{{TASK_NAME}}/aidlc-docs/change-requests.md 2>/dev/null | head -10",
-        "description": "Surface open change requests that block the next phase-approval gate"
-      },
-      {
-        "command": "cat ./.kiro/shared/SHARED-CONTEXT.md 2>/dev/null || echo '⚠ .kiro/shared/SHARED-CONTEXT.md missing — run scripts/init-workspace.sh to create it from the bundled .tpl'",
-        "description": "Load workspace-level shared context"
-      },
-      {
-        "command": "cat ./tasks/{{TASK_NAME}}/learned.md 2>/dev/null",
-        "description": "Load task-specific learnings (project schema, domain quirks)"
-      },
-      {
-        "command": "cat ./.kiro/learned/LEARNED.md 2>/dev/null || echo '⚠ .kiro/learned/LEARNED.md missing — run scripts/init-workspace.sh to create it from the bundled .tpl'",
-        "description": "Load cross-task learnings (reusable across projects)"
-      }
-    ]
-  },
   "welcomeMessage": "{{TASK_NAME}} agent ready. What would you like to do?"
 }
