@@ -31,7 +31,12 @@ This is a **multi-agent workspace** for managing several projects under a single
 │   ├── auto-learn.md                  # Capture rules + layer decision tree
 │   ├── memory-layering.md             # Where each kind of knowledge belongs
 │   ├── raise-cr.md                    # Capture scope suggestions without breaking flow
-│   └── aidlc-auto-trigger.md          # Proactively propose AI-DLC based on request shape
+│   ├── aidlc-auto-trigger.md          # Proactively propose AI-DLC based on request shape
+│   └── adr.md                         # Scaffold an Architecture Decision Record (next number + template)
+├── adr/                               # Architecture Decision Records (framework layer)
+│   ├── README.md                      # Mechanism + framework ADR index (auto-loaded via resources)
+│   ├── 0000-template.md               # Nygard-lite skeleton
+│   └── NNNN-*.md                      # One decision each (numbers never reused)
 ├── templates/
 │   ├── task/                          # Scaffolding for new tasks (used by new-task.sh)
 │   │   ├── task.yaml.tpl              # Structured metadata (project_path, repo_url, branch_prefix)
@@ -72,6 +77,7 @@ tasks/<name>/
 - **Recording a cross-task lesson** (tool / framework / internal-system recipe) → append to `.kiro/learned/LEARNED.md` with a "Why cross-task" line
 - **Deciding where a lesson belongs** → read `.kiro/skills/memory-layering.md`
 - **Capturing a scope suggestion ("顺手加 X" / "为啥不也 Y") mid-flow** → append a CR row to `tasks/<name>/aidlc-docs/change-requests.md` using `.kiro/skills/raise-cr.md`; CR types and phase-approval gate live in `.kiro/steering/change-management.md`
+- **Recording *why* something is built a certain way** (mechanism/architecture decision + rejected alternatives) → scaffold an ADR via `.kiro/skills/adr.md`; framework decisions go to `.kiro/adr/`, task-project decisions to `tasks/<name>/adr/`. This is distinct from a CR (scope) and a learned entry (reusable snippet) — see `.kiro/adr/README.md`
 - **Code style / output formats** → `.kiro/skills/output-templates.md`
 - **Delegating small tasks to local LLMs** → `.kiro/skills/delegate-to-local-llm.md`
 
@@ -112,6 +118,7 @@ pre-commit install
 5. **Context loading**: task/workspace context (task.yaml, RESUME, WORKFLOW, learned, CR-log, SHARED-CONTEXT, LEARNED) is injected via each agent.json's **`resources` (file://)** list — **NOT** `agentSpawn` hooks. The new Kiro CLI does **not** feed agentSpawn hook stdout into the model context (verified: a hook-only `task.yaml` never loaded, the same file in `resources` did). To change what loads at spawn, edit the agent's `resources`. Don't duplicate that content in chat. Methodology/gates come from `.kiro/steering/*` (auto-loaded by the rules engine).
 6. **Cross-agent work**: Use `subagent` tool with rules in `.kiro/skills/agent-delegation.md`.
 7. **Vibe coding is forbidden** — when AI-DLC is in use, update design docs first, then regenerate code. See `aidlc-usage-tips.md`.
+8. **Architecture decisions**: when a change shapes a mechanism/structure, has a non-obvious alternative, and a future reader will ask "why this way", record an ADR via `.kiro/skills/adr.md`. Framework-mechanism decisions → `.kiro/adr/` (add a line to its README index); this task's underlying-project decisions → `tasks/<name>/adr/` (index in that RESUME.md). Changed your mind = new ADR + mark the old one `superseded by NNNN`. Don't confuse with CR (scope) or learned (reusable snippet).
 
 ## Code style
 

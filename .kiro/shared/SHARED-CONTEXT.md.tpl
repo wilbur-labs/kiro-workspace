@@ -1,10 +1,11 @@
 # Shared Context
 
-Workspace-level environment information loaded by every agent at spawn (via `agent.json.tpl` agentSpawn hook).
+Workspace-level environment information loaded by every task agent at spawn (via each `agent.json`'s `resources` list — `file://.kiro/shared/SHARED-CONTEXT.md`).
 
 Use this file for facts that are **stable across tasks and apply to every agent** in this workspace: organization conventions, team contacts, common tooling, network/auth quirks, paths to shared resources.
 
 **Not for:**
+
 - Task-specific state → `tasks/<name>/RESUME.md`
 - Task-specific learnings → `tasks/<name>/learned.md`
 - Cross-project reusable lessons → `.kiro/learned/LEARNED.md`

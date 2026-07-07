@@ -18,9 +18,12 @@ config:
   # Emphasis as heading — bold text used as sub-labels in lists
   MD036: false
 
-  # Tables: aligned column style
-  MD060:
-    style: "aligned"
+  # Table column alignment — unsatisfiable for this workspace's bilingual tables:
+  # CJK / arrows (→) / ellipsis (…) make byte-column width diverge from visual
+  # width, so pipes can never "align" by the linter's count (its own --fix can't
+  # resolve it either). Every existing table violated it. Disabled to match the
+  # document style, same as the rules above.
+  MD060: false
 
 ignores:
   - "node_modules/**"
