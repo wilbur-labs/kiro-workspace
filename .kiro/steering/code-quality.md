@@ -169,9 +169,11 @@ session: **codex**.
 includes changes to the workspace framework itself (steering, skills, agent
 JSON, scripts) — the framework is not exempt from its own gate.
 
-- Run `bash scripts/codex-review.sh <repo>` (default scope `--uncommitted`).
-  Full playbook — repo discovery, triage, reporting — is in
-  `.kiro/skills/codex-review.md`.
+- Run it (default scope `--uncommitted`): **Windows** `pwsh -ExecutionPolicy
+  Bypass -File scripts/codex-review.ps1 <repo>` (kiro's execute_bash is
+  PowerShell; bare `bash` is a broken WSL) / **Linux·macOS** `bash
+  scripts/codex-review.sh <repo>`. Full playbook — platform invocation, repo
+  discovery, triage, reporting — is in `.kiro/skills/codex-review.md`.
 - **Complements Layer C, does not replace it.** Layer C runs per-unit
   mid-construction on the four semantic classes; codex runs at commit time over
   the whole change with independent eyes. Both run — don't drop one for the other.

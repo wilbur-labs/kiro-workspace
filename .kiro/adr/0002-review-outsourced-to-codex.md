@@ -24,6 +24,7 @@ This is the P4 gap in the workflow-polish task: kiro's only review was internal,
 - Two reviewers now exist with a clear division (internal/per-unit vs external/pre-commit) — the skill and steering must keep them from double-enforcing or being confused for each other.
 - Proven immediately: this same task's ADR-mechanism commit (kiro 7cb67a8) was codex-reviewed pre-commit and codex caught an over-broad "every agent" auto-load claim the primary model had written — exactly the independent-eyes value.
 - `scripts/codex-review.sh` is duplicated from claude-workspace rather than shared, so kiro-workspace stays a self-contained template (a fork without claude-workspace still works). Accepted drift cost; the two are independent by design (workflow-polish anchor).
+- **Windows shell wrinkle** (found in live verification): kiro-cli's `execute_bash` runs on PowerShell, and bare `bash` there resolves to a broken WSL bash — so `bash codex-review.sh` fails in-agent. Fix follows the core-in-bash / thin-platform-launcher shape: core logic stays in `codex-review.sh`; `scripts/codex-review.ps1` is a Windows launcher that finds the real Git Bash and runs the `.sh` through it. Linux/macOS call the `.sh` directly. Verified in-agent (`& "…\Git\bin\bash.exe" …` returns MINGW output).
 
 ## Alternatives considered
 

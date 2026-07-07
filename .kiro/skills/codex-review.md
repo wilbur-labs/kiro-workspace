@@ -27,16 +27,32 @@ Order: ① you run the relevant tests and they pass → ② codex review → ③
 
 1. **Confirm tests passed** for this change. Not run yet → run them first; codex does not replace tests.
 2. **Find the repo.** The project repo is in this task's `tasks/<task>/task.yaml` (`project_path` / repo coordinates). For a change to the workspace itself, the repo is the workspace root.
-3. **Run the script** (use the shell / `execute_bash` tool):
+3. **Run the script** (use the shell / `execute_bash` tool). **Pick by platform** —
+   the invocation differs because bare `bash` is not usable inside a kiro agent on
+   Windows (see the platform box below):
 
-   ```bash
-   bash scripts/codex-review.sh <repo_dir>
-   ```
+   - **Windows** (kiro's `execute_bash` runs on PowerShell; bare `bash` = broken WSL):
+
+     ```powershell
+     pwsh -ExecutionPolicy Bypass -File scripts/codex-review.ps1 <repo_dir>
+     ```
+
+   - **Linux / macOS**:
+
+     ```bash
+     bash scripts/codex-review.sh <repo_dir>
+     ```
 
    - Default scope = `--uncommitted` (reviews staged/unstaged/untracked before commit).
-   - Other scopes pass through: `--commit HEAD` (a commit) / `--base main` (against a branch) / a plain focus prompt (e.g. `"focus on the write-path safety"`).
+   - Other scopes pass through (append after `<repo_dir>`): `--commit HEAD` (a commit) / `--base main` (against a branch) / a plain focus prompt (e.g. `"focus on the write-path safety"`).
    - Codex is slow (1–3 min). If the tool backgrounds it, wait for completion or read the output.
    - **Model is not pinned** — the script uses codex's default (latest) model.
+
+   > **Why two invocations (Windows).** kiro-cli's `execute_bash` runs commands
+   > through PowerShell on Windows, and bare `bash` there resolves to a broken WSL
+   > bash, so `bash scripts/codex-review.sh` fails. `codex-review.ps1` locates the
+   > real Git Bash and runs the same `.sh` through it. Core logic stays in one
+   > cross-platform `.sh`; only the launcher differs by platform.
 
 4. **Triage each finding.** Codex is independent and **cannot see this session's context**, so expect some false positives or misunderstandings of settled decisions:
    - Real bug / real improvement → fix it, then **re-run the relevant tests**.

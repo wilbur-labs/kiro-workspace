@@ -18,6 +18,9 @@
 #
 # Usage:
 #   codex-review.sh <repo_dir> [codex-review-args...]
+# On Windows, do NOT call this via bare `bash` — inside a kiro agent that
+# resolves to a broken WSL bash. Use the launcher instead:
+#   pwsh -ExecutionPolicy Bypass -File scripts/codex-review.ps1 <repo_dir>
 # Default scope = --uncommitted (review staged/unstaged/untracked before commit).
 # Any other scope is passed straight through to `codex review`, e.g.:
 #   codex-review.sh <repo> --commit HEAD      # review the latest commit
