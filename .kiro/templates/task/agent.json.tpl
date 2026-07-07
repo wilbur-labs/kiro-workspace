@@ -32,6 +32,7 @@
     "file://.kiro/adr/README.md",
     "skill://.kiro/skills/auto-learn.md",
     "skill://.kiro/skills/adr.md",
+    "skill://.kiro/skills/codex-review.md",
     "skill://.kiro/skills/memory-layering.md",
     "skill://.kiro/skills/raise-cr.md",
     "skill://.kiro/skills/aidlc-auto-trigger.md",

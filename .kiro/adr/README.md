@@ -45,3 +45,4 @@ Filename `NNNN-kebab-title.md` (4-digit zero-padded, monotonically increasing, *
 Machine decisions about the workspace itself. Only this index auto-loads; read full files on demand.
 
 - **0001** — load agent context via `resources`, not agentSpawn hooks — `0001-context-via-resources-not-hooks.md`
+- **0002** — outsource pre-commit review to codex (independent model); keep internal reviewer for per-unit detection — `0002-review-outsourced-to-codex.md`

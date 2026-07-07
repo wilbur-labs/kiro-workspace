@@ -52,6 +52,7 @@ This is a **multi-agent workspace** for managing several projects under a single
 scripts/
 ├── init-workspace.sh                  # Bootstrap user-instance files from .tpl (one-time after clone)
 ├── new-task.sh                        # Scaffold a new task in one command
+├── codex-review.sh                    # Independent (codex) pre-commit review — run before every commit
 └── update-aidlc.sh                    # Update AI-DLC rules from GitHub release
 
 tasks/<name>/
@@ -78,6 +79,7 @@ tasks/<name>/
 - **Deciding where a lesson belongs** → read `.kiro/skills/memory-layering.md`
 - **Capturing a scope suggestion ("顺手加 X" / "为啥不也 Y") mid-flow** → append a CR row to `tasks/<name>/aidlc-docs/change-requests.md` using `.kiro/skills/raise-cr.md`; CR types and phase-approval gate live in `.kiro/steering/change-management.md`
 - **Recording *why* something is built a certain way** (mechanism/architecture decision + rejected alternatives) → scaffold an ADR via `.kiro/skills/adr.md`; framework decisions go to `.kiro/adr/`, task-project decisions to `tasks/<name>/adr/`. This is distinct from a CR (scope) and a learned entry (reusable snippet) — see `.kiro/adr/README.md`
+- **Reviewing a code change before commit** → run `bash scripts/codex-review.sh <repo>` for an independent (codex) second opinion; playbook in `.kiro/skills/codex-review.md`, rationale in `.kiro/adr/0002-review-outsourced-to-codex.md`. Tests you run yourself — codex is review, not a test substitute
 - **Code style / output formats** → `.kiro/skills/output-templates.md`
 - **Delegating small tasks to local LLMs** → `.kiro/skills/delegate-to-local-llm.md`
 
@@ -119,6 +121,7 @@ pre-commit install
 6. **Cross-agent work**: Use `subagent` tool with rules in `.kiro/skills/agent-delegation.md`.
 7. **Vibe coding is forbidden** — when AI-DLC is in use, update design docs first, then regenerate code. See `aidlc-usage-tips.md`.
 8. **Architecture decisions**: when a change shapes a mechanism/structure, has a non-obvious alternative, and a future reader will ask "why this way", record an ADR via `.kiro/skills/adr.md`. Framework-mechanism decisions → `.kiro/adr/` (add a line to its README index); this task's underlying-project decisions → `tasks/<name>/adr/` (index in that RESUME.md). Changed your mind = new ADR + mark the old one `superseded by NNNN`. Don't confuse with CR (scope) or learned (reusable snippet).
+9. **Review before commit (hard gate)**: any code change — including changes to this workspace's own scripts/steering/skills/agents — runs `bash scripts/codex-review.sh <repo>` (independent codex model) before `git commit`. Order: you run tests → codex review → triage every finding (fix real bugs and re-run tests / reject false positives with a one-line reason / escalate disagreements) → commit only once clean. Tests are yours to run; codex is review, not a test substitute. This is orthogonal to the Layer C `code-quality-reviewer` (same-model, per-unit) — both run. See `.kiro/skills/codex-review.md`.
 
 ## Code style
 

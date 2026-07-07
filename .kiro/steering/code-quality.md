@@ -10,6 +10,11 @@ linter can't, and **measure** the mechanical ones objectively.
 | **C — Detect** | "Catch the semantic problems tools miss." | `code-quality-reviewer` agent | After per-unit code-gen step 7 |
 | **B — Measure** | "Hold an objective bar." | Static tooling gate | Build & Test stage |
 
+Plus one **independent** checkpoint that none of A/B/C can be, because they all
+run inside the primary model's own session: **codex pre-commit review** — a
+different model, no session context, run before every commit. See "Independent
+External Review" below and `.kiro/adr/0002-review-outsourced-to-codex.md`.
+
 This file is a steering **override** on top of
 `.kiro/aws-aidlc-rule-details/construction/code-generation.md`. Upstream files
 under `.kiro/aws-aidlc-rule-details/` are NOT modified.
@@ -153,6 +158,36 @@ rather than guessing stricter numbers up front.
 
 ---
 
+## Independent External Review — Codex (pre-commit)
+
+Layers A/C/B are all executed by the primary model inside its own session, so
+they share its blind spots — a same-model reviewer tends to bless the shapes the
+author found natural. The cure is a **different** model that never saw this
+session: **codex**.
+
+**Hard rule: any code change, before `git commit`, runs codex review.** This
+includes changes to the workspace framework itself (steering, skills, agent
+JSON, scripts) — the framework is not exempt from its own gate.
+
+- Run `bash scripts/codex-review.sh <repo>` (default scope `--uncommitted`).
+  Full playbook — repo discovery, triage, reporting — is in
+  `.kiro/skills/codex-review.md`.
+- **Complements Layer C, does not replace it.** Layer C runs per-unit
+  mid-construction on the four semantic classes; codex runs at commit time over
+  the whole change with independent eyes. Both run — don't drop one for the other.
+- Order: ① primary agent runs tests and they pass → ② codex review → ③ triage
+  every finding (fix real bugs and re-run tests / reject false positives with a
+  one-line reason / escalate genuine disagreements to the user) → ④ commit only
+  once clean.
+- Tests are **not** outsourced — the primary agent runs them. Codex is review
+  only and never substitutes for tests.
+
+Why external and not just "a second internal reviewer agent": an independent
+model with no session context catches what the primary model rationalizes as
+correct. This is the same principle behind separating *prevent* (A) from
+*detect* (C) — different vantage points catch different failures — taken one step
+further to a different vantage *model*.
+
 ## Success Metric — Adoptability, not finding count
 
 The gate is optimized for **the fraction of findings a human can decide on and
@@ -187,6 +222,7 @@ Operational consequences (enforced in the reviewer prompt's output rules):
 ## Related
 
 - `.kiro/agents/code-quality-reviewer.json` + `.kiro/prompts/code-quality-reviewer.md` — the Layer C reviewer.
+- `.kiro/skills/codex-review.md` + `scripts/codex-review.sh` — the independent external (codex) pre-commit gate; `.kiro/adr/0002-review-outsourced-to-codex.md` records why.
 - `.kiro/steering/cross-unit-smoke.md` — Part 1 smoke runs just before this gate at step 7; Part 2 is the Build & Test run Layer B measures.
 - `.kiro/steering/change-management.md` — unfixed findings become CRs that flow through the phase-approval gate.
 - `.kiro/templates/inputs/tech-env.md.tpl` — **Code Quality Tooling** section declares the per-project tool stack Layer B runs.
